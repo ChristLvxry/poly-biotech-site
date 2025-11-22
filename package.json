@@ -6,7 +6,10 @@
     "node": ">=18.17.0"
   },
   "scripts": {
-// ... rest of file ...
+    "dev": "next dev",
+    "build": "next build --no-lint",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "lucide-react": "^0.300.0",
