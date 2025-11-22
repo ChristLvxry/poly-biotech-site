@@ -218,6 +218,7 @@ const translations: { [key: string]: Translations } = {
 };
 
 // --- UPDATED PRODUCT LIST WITH PLACEHOLDER IMAGES FOR PREVIEW ---
+// NOTE: Replace these URLs with your local file paths (e.g., "BPC-157.webp") before deployment.
 const products = [
   { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157" },
   { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB" },
@@ -232,15 +233,19 @@ const products = [
 ];
 
 // --- COMPONENT: CODED LOGO (SVG) ---
+// This ensures the logo is always visible in preview without needing external files
 const PolyBiotechLogo = ({ className = "h-10" }) => (
   <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Icon: A stylized molecule/leaf hybrid */}
     <path d="M40 20L20 30L20 50L40 60L60 50L60 30L40 20Z" stroke="#059669" strokeWidth="3" fill="url(#logo-gradient)"/>
     <path d="M40 20V60" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <path d="M20 30L60 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <path d="M60 30L20 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <circle cx="40" cy="40" r="4" fill="#ffffff" stroke="#059669" strokeWidth="2"/>
     
+    {/* Text: POLY */}
     <text x="80" y="52" fontFamily="sans-serif" fontWeight="800" fontSize="32" fill="#1e293b" letterSpacing="-1">POLY</text>
+    {/* Text: BIOTECH */}
     <text x="175" y="52" fontFamily="sans-serif" fontWeight="300" fontSize="32" fill="#059669" letterSpacing="1">BIOTECH</text>
     
     <defs>
@@ -256,12 +261,16 @@ const PolyBiotechLogo = ({ className = "h-10" }) => (
 const ProductCard = ({ product }: { product: any }) => {
   return (
     <div className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-emerald-100/50 hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col">
+       
+       {/* Product Image Area */}
        <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors">
           <img 
             src={product.image} 
             alt={product.name}
             className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-500"
           />
+          
+          {/* Status Badge */}
           <div className="absolute top-4 right-4">
             <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
               product.status === 'In Stock' || product.status === 'Available' 
@@ -274,6 +283,8 @@ const ProductCard = ({ product }: { product: any }) => {
             </span>
           </div>
        </div>
+
+       {/* Product Details */}
        <div className="p-6 flex flex-col flex-grow">
           <div className="mb-4">
              <div className="flex items-center justify-between mb-1">
@@ -282,6 +293,7 @@ const ProductCard = ({ product }: { product: any }) => {
              </div>
              <h4 className="font-heading font-bold text-lg text-slate-900 leading-tight group-hover:text-emerald-700 transition-colors">{product.name}</h4>
           </div>
+          
           <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
              <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
@@ -298,6 +310,7 @@ const ProductCard = ({ product }: { product: any }) => {
 
 // --- COMPONENT: IMPROVED HELIX ANIMATION ---
 const PeptideHelixGraphic = () => {
+  // Constructing a continuous ribbon helix using SVG paths
   const width = 800;
   const height = 500;
   const amplitude = 80;
@@ -308,6 +321,7 @@ const PeptideHelixGraphic = () => {
     points.push(x);
   }
 
+  // Generate path data for two intertwined strands
   const strand1Path = points.map(x => {
     const y = height / 2 + amplitude * Math.sin(x * frequency);
     return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
@@ -332,13 +346,18 @@ const PeptideHelixGraphic = () => {
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
         </defs>
+
+        {/* Background Grid Lines */}
         <g className="opacity-10" stroke="#059669" strokeWidth="0.5">
            <line x1="0" y1="100" x2="800" y2="100" />
            <line x1="0" y1="400" x2="800" y2="400" />
+           {/* Vertical grid */}
            {Array.from({length: 10}).map((_, i) => (
              <line key={i} x1={i * 80} y1="0" x2={i * 80} y2="500" strokeDasharray="5 5" />
            ))}
         </g>
+
+        {/* Connecting Bonds (Hydrogen Bonds) */}
         <g stroke="#10b981" strokeWidth="1" strokeOpacity="0.3">
           {points.filter((_, i) => i % 10 === 0).map((x, i) => {
             const y1 = height / 2 + amplitude * Math.sin(x * frequency);
@@ -346,8 +365,14 @@ const PeptideHelixGraphic = () => {
             return <line key={i} x1={x} y1={y1} x2={x} y2={y2} className="animate-pulse" style={{animationDelay: `${i * 0.1}s`}} />;
           })}
         </g>
+
+        {/* Strand 1 - The Ribbon */}
         <path d={strand1Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" className="drop-shadow-lg" />
+        
+        {/* Strand 2 - The Ribbon */}
         <path d={strand2Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" strokeOpacity="0.6" />
+
+        {/* Atoms on Strand 1 */}
         {points.filter((_, i) => i % 12 === 0).map((x, i) => {
           const y = height / 2 + amplitude * Math.sin(x * frequency);
           return (
@@ -357,6 +382,8 @@ const PeptideHelixGraphic = () => {
             </g>
           );
         })}
+
+        {/* Atoms on Strand 2 */}
         {points.filter((_, i) => i % 12 === 0).map((x, i) => {
           const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
           return (
@@ -366,6 +393,8 @@ const PeptideHelixGraphic = () => {
             </g>
           );
         })}
+
+        {/* Highlight Data Tag */}
         <g transform="translate(600, 100)">
           <rect x="0" y="0" width="140" height="50" rx="12" fill="rgba(255,255,255,0.9)" stroke="#d1fae5" strokeWidth="1" />
           <circle cx="20" cy="25" r="4" fill="#059669" className="animate-ping" />
@@ -383,6 +412,7 @@ const HelixLoader = () => {
     <div className="flex items-center gap-1.5 h-12 justify-center py-4">
       {[...Array(5)].map((_, i) => (
         <div key={i} className="relative flex flex-col items-center justify-center h-full w-3">
+           {/* Top Strand Particle */}
            <div 
              className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full"
              style={{ 
@@ -390,6 +420,7 @@ const HelixLoader = () => {
                animationDelay: `${i * 0.15}s` 
              }}
            />
+           {/* Bottom Strand Particle */}
            <div 
              className="absolute w-2.5 h-2.5 bg-emerald-300 rounded-full"
              style={{ 
@@ -397,10 +428,11 @@ const HelixLoader = () => {
                animationDelay: `${i * 0.15}s` 
              }}
            />
+           {/* Connecting Bond (Optional visual aid, fades in/out) */}
            <div 
               className="w-0.5 h-8 bg-emerald-200/50"
               style={{
-                 transform: 'scaleY(0.5)', 
+                 transform: 'scaleY(0.5)', // Static scale for the bond line appearance
               }}
            />
         </div>
@@ -471,6 +503,8 @@ const App = () => {
       let panelData = aiBloodPanel;
       
       if (aiBloodFile) {
+        // In a real app, this is where OCR/PDF parsing would happen
+        // For this demo, we simulate extraction if the user hasn't typed anything else
         if (panelData.includes("[File Attached")) {
            panelData = "Standard Male Hormone Panel (Simulated Extraction): Total T: 350 ng/dL, Free T: 8 ng/dL, Estradiol: 22 pg/mL, IGF-1: 110 ng/mL, Cholesterol: 210 mg/dL.";
         }
@@ -530,13 +564,17 @@ const App = () => {
       <StyleInjection />
       <MoleculeBackground />
 
+      {/* --- NAVIGATION (Floating Pill with 95% Transparency) --- */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
         <nav className={`pointer-events-auto transition-all duration-500 ease-out ${scrolled ? 'w-full max-w-5xl glass-nav rounded-full shadow-lg py-3 px-6' : 'w-full max-w-7xl bg-transparent py-4 px-4'}`}>
           <div className="flex justify-between items-center">
+            
+            {/* Logo */}
             <div className="flex items-center gap-3 group cursor-pointer">
               <PolyBiotechLogo className="w-auto h-10" />
             </div>
 
+            {/* Desktop Links */}
             <div className={`hidden md:flex items-center ${scrolled ? 'space-x-1' : 'space-x-6'}`}>
               {Object.entries(t.nav).map(([key, label]) => (
                 <a 
@@ -549,6 +587,7 @@ const App = () => {
               ))}
             </div>
 
+            {/* Utilities */}
             <div className="flex items-center gap-3">
               <button 
                 onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
@@ -561,6 +600,7 @@ const App = () => {
                 Portal <ArrowUpRight className="w-3 h-3" />
               </button>
               
+              {/* Mobile Toggle */}
               <button className="md:hidden p-2 text-slate-700 bg-white/70 rounded-full" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                 {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -569,6 +609,7 @@ const App = () => {
         </nav>
       </div>
       
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white/98 backdrop-blur-xl pt-32 px-6 md:hidden animate-fade-in">
           <div className="flex flex-col gap-6 text-center">
@@ -585,6 +626,7 @@ const App = () => {
       <section className="relative pt-48 pb-16 lg:pt-64 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid lg:grid-cols-12 gap-16 items-center">
           
+          {/* Typography Side */}
           <div className="lg:col-span-7 relative z-10">
             <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur border border-emerald-100 px-4 py-1.5 rounded-full shadow-sm mb-8 animate-fade-in-up">
               <span className="w-2 h-2 bg-emerald-600 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.8)] animate-pulse" />
@@ -613,6 +655,7 @@ const App = () => {
             </div>
           </div>
 
+          {/* Graphic Side */}
           <div className="lg:col-span-5 relative lg:translate-x-8">
             <div className="absolute -inset-4 bg-gradient-to-tr from-emerald-300/40 to-teal-200/40 rounded-[2rem] blur-2xl -z-10" />
             
@@ -648,12 +691,14 @@ const App = () => {
 
       {/* --- NEW SECTION: AI RESEARCH ASSISTANT (GEMINI INTEGRATION) --- */}
       <section className="py-20 bg-gradient-to-b from-white to-emerald-50/50 relative border-t border-emerald-100/50 overflow-hidden">
+         {/* Background details for this section */}
          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-50 to-transparent -z-10" />
          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-100/20 rounded-full blur-3xl -z-10" />
 
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="grid lg:grid-cols-12 gap-12">
                
+               {/* Left: Tool Interface */}
                <div className="lg:col-span-7">
                  <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
@@ -758,9 +803,11 @@ const App = () => {
                  </div>
                </div>
 
+               {/* Right: Output Area */}
                <div className="lg:col-span-5 flex flex-col h-full">
                   <div className={`flex-1 rounded-3xl border border-slate-200 bg-slate-50 overflow-hidden relative transition-all duration-500 animate-tilt-float ${generated ? 'shadow-xl ring-1 ring-emerald-100' : 'opacity-80'}`}>
                      
+                     {/* Output Header */}
                      <div className="px-6 py-4 bg-white border-b border-slate-200 flex justify-between items-center">
                         <div className="flex items-center gap-2 text-slate-500">
                            <FileCode className="w-4 h-4" />
@@ -773,6 +820,7 @@ const App = () => {
                         )}
                      </div>
 
+                     {/* Output Content */}
                      <div className="p-6 h-full max-h-[400px] overflow-y-auto custom-scrollbar">
                         {!generated && !isGenerating && (
                            <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-3">
@@ -786,6 +834,7 @@ const App = () => {
                         {isGenerating && (
                            <div className="h-full flex flex-col items-center justify-center text-emerald-600 space-y-4">
                               <div className="relative scale-125">
+                                 {/* Replaced generic spinner with custom Helix Loader */}
                                  <HelixLoader />
                               </div>
                               <p className="text-sm font-bold animate-pulse mt-2">Cross-referencing Biomarkers...</p>
