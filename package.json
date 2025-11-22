@@ -2,11 +2,11 @@
   "name": "poly-biotech",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+// ... rest of file ...
   },
   "dependencies": {
     "lucide-react": "^0.300.0",
