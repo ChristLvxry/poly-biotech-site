@@ -111,12 +111,6 @@ const StyleInjection = () => (
     }
     .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
 
-    @keyframes pulse-slow {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
-
     /* Modified animation: Float only, no tilt */
     @keyframes subtle-tilt-float {
       0%, 100% { transform: translateY(0px); }
@@ -231,6 +225,7 @@ const translations: { [key: string]: Translations } = {
 };
 
 // --- UPDATED PRODUCT LIST WITH PLACEHOLDER IMAGES FOR PREVIEW ---
+// NOTE: Replace these URLs with your local file paths (e.g., "BPC-157.webp") before deployment.
 const products = [
   { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157", video: null },
   { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB", video: null },
@@ -245,6 +240,7 @@ const products = [
 ];
 
 // --- COMPONENT: CODED LOGO (SVG) ---
+// This ensures the logo is always visible in preview without needing external files
 const PolyBiotechLogo = ({ className = "h-10" }) => (
   <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Icon: A stylized molecule/leaf hybrid */}
@@ -298,8 +294,8 @@ const ProductCard = ({ product }: { product: any }) => {
        {/* Product Image/Video Area */}
        <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors overflow-hidden">
           
-          {/* Image (Always present, hidden when video plays) */}
-          <img 
+           {/* Image (Always present, hidden when video plays) */}
+           <img 
             src={product.image} 
             alt={product.name}
             className={`w-full h-full object-contain drop-shadow-sm transition-all duration-500 ${isHovering && product.video ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}
@@ -316,9 +312,9 @@ const ProductCard = ({ product }: { product: any }) => {
                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
              />
           )}
-          
+
           {/* Status Badge */}
-          <div className="absolute top-4 right-4 z-10">
+          <div className="absolute top-4 right-4">
             <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
               product.status === 'In Stock' || product.status === 'Available' 
                 ? 'bg-emerald-50/90 text-emerald-700 border-emerald-200'
@@ -330,8 +326,8 @@ const ProductCard = ({ product }: { product: any }) => {
             </span>
           </div>
 
-          {/* Video Indicator (Optional) */}
-          {product.video && !isHovering && (
+           {/* Video Indicator (Optional) */}
+           {product.video && !isHovering && (
              <div className="absolute bottom-4 right-4 bg-black/50 text-white p-1.5 rounded-full backdrop-blur-sm">
                 <Play className="w-3 h-3 fill-white" />
              </div>
@@ -676,12 +672,22 @@ const App = () => {
         </div>
       )}
 
-      {/* --- HERO SECTION --- */}
-      <section className="relative pt-48 pb-16 lg:pt-64 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-12 gap-16 items-center">
-          
-          {/* Typography Side */}
-          <div className="lg:col-span-7 relative z-10">
+      {/* --- HERO SECTION WITH IMAGE BACKGROUND --- */}
+      <section className="relative pt-48 pb-16 lg:pt-64 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+        
+        {/* HERO BACKGROUND IMAGE */}
+        <div className="absolute inset-0 z-0">
+            <img 
+               src="image_729364.jpg" 
+               alt="Laboratory Background" 
+               className="w-full h-full object-cover opacity-10" 
+            />
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-16 items-center relative z-10">
+          <div className="lg:col-span-7">
             <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur border border-emerald-100 px-4 py-1.5 rounded-full shadow-sm mb-8 animate-fade-in-up">
               <span className="w-2 h-2 bg-emerald-600 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.8)] animate-pulse" />
               <span className="text-xs font-bold text-emerald-900 tracking-wider uppercase font-heading">{t.hero.badge}</span>
