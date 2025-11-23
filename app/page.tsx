@@ -224,30 +224,37 @@ const translations: { [key: string]: Translations } = {
   }
 };
 
-// --- PRODUCT LIST ---
+// --- UPDATED PRODUCT LIST WITH PLACEHOLDER IMAGES FOR PREVIEW ---
+// NOTE: Replace these URLs with your local file paths (e.g., "BPC-157.webp") before deployment.
 const products = [
-  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "BPC-157.webp", video: "bpc157_spin.mp4" },
-  { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "BPC-157_TB-500_Blend.webp", video: null },
-  { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "GHK-Cu.webp", video: null },
-  { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "CJC-1295_No_DAC.webp", video: null },
-  { name: "CJC-1295 + Ipamorelin", code: "BLEND-02", cat: "Growth Blend", purity: "≥99%", status: "Available", image: "CJC-1295_Ipamorelin.webp", video: null },
-  { name: "Ipamorelin", code: "IPA-10", cat: "Growth", purity: "≥99%", status: "In Stock", image: "Ipamorelin.webp", video: null },
-  { name: "AOD-9604", code: "AOD-05", cat: "Fat Loss", purity: "≥99%", status: "Low Stock", image: "AOD-9604.webp", video: null },
-  { name: "5-Amino-1MQ", code: "5AM-10", cat: "Metabolic", purity: "≥99%", status: "Limited", image: "5-Amino-1MQ.webp", video: null },
-  { name: "GHRP-6", code: "GHRP-10", cat: "Growth", purity: "≥99%", status: "Available", image: "GHRP-6.webp", video: null },
-  { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "Glow70.webp", video: null },
+  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157", video: "bpc157_spin.mp4" },
+  { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB", video: null },
+  { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHK-Cu", video: null },
+  { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=CJC-1295", video: null },
+  { name: "CJC-1295 + Ipamorelin", code: "BLEND-02", cat: "Growth Blend", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+CJC+Ipa", video: null },
+  { name: "Ipamorelin", code: "IPA-10", cat: "Growth", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Ipamorelin", video: null },
+  { name: "AOD-9604", code: "AOD-05", cat: "Fat Loss", purity: "≥99%", status: "Low Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=AOD-9604", video: null },
+  { name: "5-Amino-1MQ", code: "5AM-10", cat: "Metabolic", purity: "≥99%", status: "Limited", image: "https://placehold.co/600x600/f0fdf4/059669?text=5-Amino-1MQ", video: null },
+  { name: "GHRP-6", code: "GHRP-10", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHRP-6", video: null },
+  { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "https://placehold.co/600x600/f0fdf4/059669?text=Glow+70", video: null },
 ];
 
 // --- COMPONENT: CODED LOGO (SVG) ---
+// This ensures the logo is always visible in preview without needing external files
 const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
   <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Icon: A stylized molecule/leaf hybrid */}
     <path d="M40 20L20 30L20 50L40 60L60 50L60 30L40 20Z" stroke="#059669" strokeWidth="3" fill="url(#logo-gradient)"/>
     <path d="M40 20V60" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <path d="M20 30L60 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <path d="M60 30L20 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <circle cx="40" cy="40" r="4" fill="#ffffff" stroke="#059669" strokeWidth="2"/>
+    
+    {/* Text: POLY */}
     <text x="80" y="52" fontFamily="sans-serif" fontWeight="800" fontSize="32" fill="#1e293b" letterSpacing="-1">POLY</text>
+    {/* Text: BIOTECH */}
     <text x="175" y="52" fontFamily="sans-serif" fontWeight="300" fontSize="32" fill="#059669" letterSpacing="1">BIOTECH</text>
+    
     <defs>
       <linearGradient id="logo-gradient" x1="20" y1="20" x2="60" y2="60" gradientUnits="userSpaceOnUse">
         <stop stopColor="#d1fae5"/>
@@ -257,109 +264,7 @@ const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
   </svg>
 );
 
-// --- COMPONENT: HELIX GRAPHIC ---
-const PeptideHelixGraphic = () => {
-  const width = 800;
-  const height = 500;
-  const amplitude = 80;
-  const frequency = 0.02;
-  const points = [];
-  for (let x = 0; x <= width; x += 5) { points.push(x); }
-
-  const strand1Path = points.map(x => {
-    const y = height / 2 + amplitude * Math.sin(x * frequency);
-    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-
-  const strand2Path = points.map(x => {
-    const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-
-  return (
-    <div className="relative w-full aspect-video overflow-hidden bg-emerald-50/10">
-      <svg viewBox="0 0 800 500" className="w-full h-full">
-        <defs>
-          <linearGradient id="strand-gradient" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
-            <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
-          </linearGradient>
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-        <g className="opacity-10" stroke="#059669" strokeWidth="0.5">
-           <line x1="0" y1="100" x2="800" y2="100" />
-           <line x1="0" y1="400" x2="800" y2="400" />
-           {Array.from({length: 10}).map((_, i) => (
-             <line key={i} x1={i * 80} y1="0" x2={i * 80} y2="500" strokeDasharray="5 5" />
-           ))}
-        </g>
-        <g stroke="#10b981" strokeWidth="1" strokeOpacity="0.3">
-          {points.filter((_, i) => i % 10 === 0).map((x, i) => {
-            const y1 = height / 2 + amplitude * Math.sin(x * frequency);
-            const y2 = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-            return <line key={i} x1={x} y1={y1} x2={x} y2={y2} className="animate-pulse" style={{animationDelay: `${i * 0.1}s`}} />;
-          })}
-        </g>
-        <path d={strand1Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" className="drop-shadow-lg" />
-        <path d={strand2Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" strokeOpacity="0.6" />
-        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
-          const y = height / 2 + amplitude * Math.sin(x * frequency);
-          return (
-            <g key={`s1-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2}s` }}>
-              <circle cx={x} cy={y} r="6" fill="#059669" filter="url(#glow)" />
-              <circle cx={x} cy={y} r="12" fill="#059669" fillOpacity="0.15" />
-            </g>
-          );
-        })}
-        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
-          const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-          return (
-            <g key={`s2-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2 + 1}s` }}>
-              <circle cx={x} cy={y} r="4" fill="#10b981" />
-              <circle cx={x} cy={y} r="8" fill="#10b981" fillOpacity="0.15" />
-            </g>
-          );
-        })}
-        <g transform="translate(600, 100)">
-          <rect x="0" y="0" width="140" height="50" rx="12" fill="rgba(255,255,255,0.9)" stroke="#d1fae5" strokeWidth="1" />
-          <circle cx="20" cy="25" r="4" fill="#059669" className="animate-ping" />
-          <text x="35" y="20" className="font-heading text-[10px] font-bold fill-slate-400 uppercase tracking-wide">Structure ID</text>
-          <text x="35" y="35" className="font-heading text-sm font-bold fill-emerald-900">Alpha-Helix 2B</text>
-        </g>
-      </svg>
-    </div>
-  );
-};
-
-// --- COMPONENT: HELIX LOADER ---
-const HelixLoader = () => {
-  return (
-    <div className="flex items-center gap-1.5 h-12 justify-center py-4">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="relative flex flex-col items-center justify-center h-full w-3">
-           <div 
-             className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full"
-             style={{ animation: `loader-orbit-1 1.5s infinite linear`, animationDelay: `${i * 0.15}s` }}
-           />
-           <div 
-             className="absolute w-2.5 h-2.5 bg-emerald-300 rounded-full"
-             style={{ animation: `loader-orbit-2 1.5s infinite linear`, animationDelay: `${i * 0.15}s` }}
-           />
-           <div 
-              className="w-0.5 h-8 bg-emerald-200/50"
-              style={{ transform: 'scaleY(0.5)' }}
-           />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-// --- COMPONENT: PRODUCT CARD ---
+// --- COMPONENT: PRODUCT CARD WITH FALLBACK ---
 const ProductCard = ({ product }: { product: any }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -385,12 +290,18 @@ const ProductCard = ({ product }: { product: any }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+       
+       {/* Product Image Area */}
        <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors overflow-hidden">
+          
+          {/* Image (Always present, hidden when video plays) */}
           <img 
             src={product.image} 
             alt={product.name}
             className={`w-full h-full object-contain drop-shadow-sm transition-all duration-500 ${isHovering && product.video ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}
           />
+          
+          {/* Video (Only if exists) */}
           {product.video && (
              <video 
                ref={videoRef}
@@ -401,6 +312,8 @@ const ProductCard = ({ product }: { product: any }) => {
                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
              />
           )}
+
+          {/* Status Badge */}
           <div className="absolute top-4 right-4 z-10">
             <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
               product.status === 'In Stock' || product.status === 'Available' 
@@ -412,12 +325,16 @@ const ProductCard = ({ product }: { product: any }) => {
               {product.status}
             </span>
           </div>
-          {product.video && !isHovering && (
+
+           {/* Video Indicator (Optional) */}
+           {product.video && !isHovering && (
              <div className="absolute bottom-4 right-4 bg-black/50 text-white p-1.5 rounded-full backdrop-blur-sm">
                 <Play className="w-3 h-3 fill-white" />
              </div>
           )}
        </div>
+
+       {/* Product Details */}
        <div className="p-6 flex flex-col flex-grow">
           <div className="mb-4">
              <div className="flex items-center justify-between mb-1">
@@ -426,6 +343,7 @@ const ProductCard = ({ product }: { product: any }) => {
              </div>
              <h4 className="font-heading font-bold text-lg text-slate-900 leading-tight group-hover:text-emerald-700 transition-colors">{product.name}</h4>
           </div>
+          
           <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
              <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
@@ -436,6 +354,139 @@ const ProductCard = ({ product }: { product: any }) => {
              </button>
           </div>
        </div>
+    </div>
+  );
+};
+
+// --- COMPONENT: IMPROVED HELIX ANIMATION ---
+const PeptideHelixGraphic = () => {
+  // Constructing a continuous ribbon helix using SVG paths
+  const width = 800;
+  const height = 500;
+  const amplitude = 80;
+  const frequency = 0.02;
+  const points = [];
+  
+  for (let x = 0; x <= width; x += 5) {
+    points.push(x);
+  }
+
+  // Generate path data for two intertwined strands
+  const strand1Path = points.map(x => {
+    const y = height / 2 + amplitude * Math.sin(x * frequency);
+    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
+  const strand2Path = points.map(x => {
+    const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
+  return (
+    <div className="relative w-full aspect-video overflow-hidden bg-emerald-50/10">
+      <svg viewBox="0 0 800 500" className="w-full h-full">
+        <defs>
+          <linearGradient id="strand-gradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
+            <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
+          </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {/* Background Grid Lines */}
+        <g className="opacity-10" stroke="#059669" strokeWidth="0.5">
+           <line x1="0" y1="100" x2="800" y2="100" />
+           <line x1="0" y1="400" x2="800" y2="400" />
+           {/* Vertical grid */}
+           {Array.from({length: 10}).map((_, i) => (
+             <line key={i} x1={i * 80} y1="0" x2={i * 80} y2="500" strokeDasharray="5 5" />
+           ))}
+        </g>
+
+        {/* Connecting Bonds (Hydrogen Bonds) */}
+        <g stroke="#10b981" strokeWidth="1" strokeOpacity="0.3">
+          {points.filter((_, i) => i % 10 === 0).map((x, i) => {
+            const y1 = height / 2 + amplitude * Math.sin(x * frequency);
+            const y2 = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+            return <line key={i} x1={x} y1={y1} x2={x} y2={y2} className="animate-pulse" style={{animationDelay: `${i * 0.1}s`}} />;
+          })}
+        </g>
+
+        {/* Strand 1 - The Ribbon */}
+        <path d={strand1Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" className="drop-shadow-lg" />
+        
+        {/* Strand 2 - The Ribbon */}
+        <path d={strand2Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" strokeOpacity="0.6" />
+
+        {/* Atoms on Strand 1 */}
+        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
+          const y = height / 2 + amplitude * Math.sin(x * frequency);
+          return (
+            <g key={`s1-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2}s` }}>
+              <circle cx={x} cy={y} r="6" fill="#059669" filter="url(#glow)" />
+              <circle cx={x} cy={y} r="12" fill="#059669" fillOpacity="0.15" />
+            </g>
+          );
+        })}
+
+        {/* Atoms on Strand 2 */}
+        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
+          const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+          return (
+            <g key={`s2-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2 + 1}s` }}>
+              <circle cx={x} cy={y} r="4" fill="#10b981" />
+              <circle cx={x} cy={y} r="8" fill="#10b981" fillOpacity="0.15" />
+            </g>
+          );
+        })}
+
+        {/* Highlight Data Tag */}
+        <g transform="translate(600, 100)">
+          <rect x="0" y="0" width="140" height="50" rx="12" fill="rgba(255,255,255,0.9)" stroke="#d1fae5" strokeWidth="1" />
+          <circle cx="20" cy="25" r="4" fill="#059669" className="animate-ping" />
+          <text x="35" y="20" className="font-heading text-[10px] font-bold fill-slate-400 uppercase tracking-wide">Structure ID</text>
+          <text x="35" y="35" className="font-heading text-sm font-bold fill-emerald-900">Alpha-Helix 2B</text>
+        </g>
+      </svg>
+    </div>
+  );
+};
+
+// --- COMPONENT: HELIX LOADER (NEW) ---
+const HelixLoader = () => {
+  return (
+    <div className="flex items-center gap-1.5 h-12 justify-center py-4">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="relative flex flex-col items-center justify-center h-full w-3">
+           {/* Top Strand Particle */}
+           <div 
+             className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full"
+             style={{ 
+               animation: `loader-orbit-1 1.5s infinite linear`, 
+               animationDelay: `${i * 0.15}s` 
+             }}
+           />
+           {/* Bottom Strand Particle */}
+           <div 
+             className="absolute w-2.5 h-2.5 bg-emerald-300 rounded-full"
+             style={{ 
+               animation: `loader-orbit-2 1.5s infinite linear`, 
+               animationDelay: `${i * 0.15}s` 
+             }}
+           />
+           {/* Connecting Bond (Optional visual aid, fades in/out) */}
+           <div 
+              className="w-0.5 h-8 bg-emerald-200/50"
+              style={{
+                 transform: 'scaleY(0.5)', // Static scale for the bond line appearance
+              }}
+           />
+        </div>
+      ))}
     </div>
   );
 };
@@ -684,6 +735,7 @@ const App = () => {
                  </div>
               </div>
               <div className="rounded-xl overflow-hidden bg-white/50 border border-white/60 shadow-inner">
+                {/* 3D Helix Graphic restored here */}
                 <PeptideHelixGraphic />
               </div>
               
