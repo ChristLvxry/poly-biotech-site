@@ -54,8 +54,9 @@ const StyleInjection = () => (
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
     
+    /* Custom class for the 95% transparent header */
     .glass-nav {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.05); /* 95% transparent */
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -85,12 +86,24 @@ const StyleInjection = () => (
         radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.4) 0px, transparent 50%);
     }
 
-    /* Animations */
+    .glow-text {
+      text-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+    }
+
     @keyframes float-particle {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-10px); }
     }
-    .animate-float { animation: float-particle 4s ease-in-out infinite; }
+
+    .animate-float {
+      animation: float-particle 4s ease-in-out infinite;
+    }
+    
+    /* Animation for the new helix */
+    @keyframes helix-spin {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
     
     @keyframes fade-in-up {
       from { opacity: 0; transform: translateY(20px); }
@@ -132,6 +145,116 @@ const StyleInjection = () => (
       transform-origin: center center;
     }
   `}</style>
+);
+
+// --- MOCK DATA & TRANSLATIONS ---
+interface Translations {
+  nav: { [key: string]: string };
+  hero: {
+    badge: string;
+    title: string;
+    titleSpan: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+  };
+  stats: {
+    labs: string;
+    purity: string;
+    uptime: string;
+    states: string;
+  };
+  services: {
+    title: string;
+    therapeutic: string;
+    cosmetic: string;
+    performance: string;
+    custom: string;
+  };
+}
+
+const translations: { [key: string]: Translations } = {
+  en: {
+    nav: { services: "Services", compliance: "Compliance", network: "Network", contact: "Contact" },
+    hero: {
+      badge: "Nationwide Research Distribution",
+      title: "Molecular Precision.",
+      titleSpan: "Clinical Scale.",
+      subtitle: "The premier infrastructure for peptide synthesis. Supplying 99.4%+ purity compounds to 140+ elite institutions across the United States.",
+      ctaPrimary: "Explore Catalog",
+      ctaSecondary: "Protocol Access"
+    },
+    stats: {
+      labs: "Partner Labs",
+      purity: "HPLC Purity",
+      uptime: "System Uptime",
+      states: "State Coverage"
+    },
+    services: {
+      title: "Research Vectors",
+      therapeutic: "Therapeutics",
+      cosmetic: "Dermal Science",
+      performance: "Bio-Performance",
+      custom: "Custom Synthesis"
+    }
+  },
+  es: {
+    nav: { services: "Servicios", compliance: "Cumplimiento", network: "Red", contact: "Contacto" },
+    hero: {
+      badge: "Distribución Nacional de Investigación",
+      title: "Precisión Molecular.",
+      titleSpan: "Escala Clínica.",
+      subtitle: "La infraestructura principal para la síntesis de péptidos. Suministrando compuestos con 99.4%+ de pureza a más de 140 instituciones de élite.",
+      ctaPrimary: "Explorar Catálogo",
+      ctaSecondary: "Acceso a Protocolos"
+    },
+    stats: {
+      labs: "Laboratorios",
+      purity: "Pureza HPLC",
+      uptime: "Tiempo de Sistema",
+      states: "Cobertura Estatal"
+    },
+    services: {
+      title: "Vectores de Investigación",
+      therapeutic: "Terapéutica",
+      cosmetic: "Ciencia Dérmica",
+      performance: "Bio-Rendimiento",
+      custom: "Síntesis Personalizada"
+    }
+  }
+};
+
+// --- PRODUCT LIST ---
+const products = [
+  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "BPC-157.webp", video: "bpc157_spin.mp4" },
+  { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "BPC-157_TB-500_Blend.webp", video: null },
+  { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "GHK-Cu.webp", video: null },
+  { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "CJC-1295_No_DAC.webp", video: null },
+  { name: "CJC-1295 + Ipamorelin", code: "BLEND-02", cat: "Growth Blend", purity: "≥99%", status: "Available", image: "CJC-1295_Ipamorelin.webp", video: null },
+  { name: "Ipamorelin", code: "IPA-10", cat: "Growth", purity: "≥99%", status: "In Stock", image: "Ipamorelin.webp", video: null },
+  { name: "AOD-9604", code: "AOD-05", cat: "Fat Loss", purity: "≥99%", status: "Low Stock", image: "AOD-9604.webp", video: null },
+  { name: "5-Amino-1MQ", code: "5AM-10", cat: "Metabolic", purity: "≥99%", status: "Limited", image: "5-Amino-1MQ.webp", video: null },
+  { name: "GHRP-6", code: "GHRP-10", cat: "Growth", purity: "≥99%", status: "Available", image: "GHRP-6.webp", video: null },
+  { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "Glow70.webp", video: null },
+];
+
+// --- COMPONENT: CODED LOGO (SVG) ---
+const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
+  <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M40 20L20 30L20 50L40 60L60 50L60 30L40 20Z" stroke="#059669" strokeWidth="3" fill="url(#logo-gradient)"/>
+    <path d="M40 20V60" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M20 30L60 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M60 30L20 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="40" cy="40" r="4" fill="#ffffff" stroke="#059669" strokeWidth="2"/>
+    <text x="80" y="52" fontFamily="sans-serif" fontWeight="800" fontSize="32" fill="#1e293b" letterSpacing="-1">POLY</text>
+    <text x="175" y="52" fontFamily="sans-serif" fontWeight="300" fontSize="32" fill="#059669" letterSpacing="1">BIOTECH</text>
+    <defs>
+      <linearGradient id="logo-gradient" x1="20" y1="20" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#d1fae5"/>
+        <stop offset="1" stopColor="#ffffff"/>
+      </linearGradient>
+    </defs>
+  </svg>
 );
 
 // --- COMPONENT: HELIX GRAPHIC ---
@@ -317,25 +440,6 @@ const ProductCard = ({ product }: { product: any }) => {
   );
 };
 
-// --- COMPONENT: CODED LOGO (SVG) ---
-const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
-  <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M40 20L20 30L20 50L40 60L60 50L60 30L40 20Z" stroke="#059669" strokeWidth="3" fill="url(#logo-gradient)"/>
-    <path d="M40 20V60" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M20 30L60 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M60 30L20 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
-    <circle cx="40" cy="40" r="4" fill="#ffffff" stroke="#059669" strokeWidth="2"/>
-    <text x="80" y="52" fontFamily="sans-serif" fontWeight="800" fontSize="32" fill="#1e293b" letterSpacing="-1">POLY</text>
-    <text x="175" y="52" fontFamily="sans-serif" fontWeight="300" fontSize="32" fill="#059669" letterSpacing="1">BIOTECH</text>
-    <defs>
-      <linearGradient id="logo-gradient" x1="20" y1="20" x2="60" y2="60" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#d1fae5"/>
-        <stop offset="1" stopColor="#ffffff"/>
-      </linearGradient>
-    </defs>
-  </svg>
-);
-
 // --- COMPONENT: ABSTRACT MOLECULE BACKGROUND ---
 const MoleculeBackground = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
@@ -350,97 +454,6 @@ const MoleculeBackground = () => (
     </svg>
   </div>
 );
-
-// --- MOCK DATA & TRANSLATIONS ---
-interface Translations {
-  nav: { [key: string]: string };
-  hero: {
-    badge: string;
-    title: string;
-    titleSpan: string;
-    subtitle: string;
-    ctaPrimary: string;
-    ctaSecondary: string;
-  };
-  stats: {
-    labs: string;
-    purity: string;
-    uptime: string;
-    states: string;
-  };
-  services: {
-    title: string;
-    therapeutic: string;
-    cosmetic: string;
-    performance: string;
-    custom: string;
-  };
-}
-
-const translations: { [key: string]: Translations } = {
-  en: {
-    nav: { services: "Services", compliance: "Compliance", network: "Network", contact: "Contact" },
-    hero: {
-      badge: "Nationwide Research Distribution",
-      title: "Molecular Precision.",
-      titleSpan: "Clinical Scale.",
-      subtitle: "The premier infrastructure for peptide synthesis. Supplying 99.4%+ purity compounds to 140+ elite institutions across the United States.",
-      ctaPrimary: "Explore Catalog",
-      ctaSecondary: "Protocol Access"
-    },
-    stats: {
-      labs: "Partner Labs",
-      purity: "HPLC Purity",
-      uptime: "System Uptime",
-      states: "State Coverage"
-    },
-    services: {
-      title: "Research Vectors",
-      therapeutic: "Therapeutics",
-      cosmetic: "Dermal Science",
-      performance: "Bio-Performance",
-      custom: "Custom Synthesis"
-    }
-  },
-  es: {
-    nav: { services: "Servicios", compliance: "Cumplimiento", network: "Red", contact: "Contacto" },
-    hero: {
-      badge: "Distribución Nacional de Investigación",
-      title: "Precisión Molecular.",
-      titleSpan: "Escala Clínica.",
-      subtitle: "La infraestructura principal para la síntesis de péptidos. Suministrando compuestos con 99.4%+ de pureza a más de 140 instituciones de élite.",
-      ctaPrimary: "Explorar Catálogo",
-      ctaSecondary: "Acceso a Protocolos"
-    },
-    stats: {
-      labs: "Laboratorios",
-      purity: "Pureza HPLC",
-      uptime: "Tiempo de Sistema",
-      states: "Cobertura Estatal"
-    },
-    services: {
-      title: "Vectores de Investigación",
-      therapeutic: "Terapéutica",
-      cosmetic: "Ciencia Dérmica",
-      performance: "Bio-Rendimiento",
-      custom: "Síntesis Personalizada"
-    }
-  }
-};
-
-// --- PRODUCT LIST ---
-const products = [
-  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157", video: "bpc157_spin.mp4" },
-  { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB", video: null },
-  { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHK-Cu", video: null },
-  { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=CJC-1295", video: null },
-  { name: "CJC-1295 + Ipamorelin", code: "BLEND-02", cat: "Growth Blend", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+CJC+Ipa", video: null },
-  { name: "Ipamorelin", code: "IPA-10", cat: "Growth", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Ipamorelin", video: null },
-  { name: "AOD-9604", code: "AOD-05", cat: "Fat Loss", purity: "≥99%", status: "Low Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=AOD-9604", video: null },
-  { name: "5-Amino-1MQ", code: "5AM-10", cat: "Metabolic", purity: "≥99%", status: "Limited", image: "https://placehold.co/600x600/f0fdf4/059669?text=5-Amino-1MQ", video: null },
-  { name: "GHRP-6", code: "GHRP-10", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHRP-6", video: null },
-  { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "https://placehold.co/600x600/f0fdf4/059669?text=Glow+70", video: null },
-];
 
 // --- MAIN APP COMPONENT ---
 const App = () => {
@@ -497,6 +510,8 @@ const App = () => {
       let panelData = aiBloodPanel;
       
       if (aiBloodFile) {
+        // In a real app, this is where OCR/PDF parsing would happen
+        // For this demo, we simulate extraction if the user hasn't typed anything else
         if (panelData.includes("[File Attached")) {
            panelData = "Standard Male Hormone Panel (Simulated Extraction): Total T: 350 ng/dL, Free T: 8 ng/dL, Estradiol: 22 pg/mL, IGF-1: 110 ng/mL, Cholesterol: 210 mg/dL.";
         }
@@ -556,7 +571,7 @@ const App = () => {
       <StyleInjection />
       <MoleculeBackground />
 
-      {/* --- NAVIGATION --- */}
+      {/* --- NAVIGATION (Floating Pill with 95% Transparency) --- */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
         <nav className={`pointer-events-auto transition-all duration-500 ease-out ${scrolled ? 'w-full max-w-5xl glass-nav rounded-full shadow-lg py-3 px-6' : 'w-full max-w-7xl bg-transparent py-4 px-4'}`}>
           <div className="flex justify-between items-center">
