@@ -54,9 +54,8 @@ const StyleInjection = () => (
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
     
-    /* Custom class for the 95% transparent header */
     .glass-nav {
-      background: rgba(255, 255, 255, 0.05); /* 95% transparent */
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -86,24 +85,12 @@ const StyleInjection = () => (
         radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.4) 0px, transparent 50%);
     }
 
-    .glow-text {
-      text-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
-    }
-
+    /* Animations */
     @keyframes float-particle {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-10px); }
     }
-
-    .animate-float {
-      animation: float-particle 4s ease-in-out infinite;
-    }
-    
-    /* Animation for the new helix */
-    @keyframes helix-spin {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
+    .animate-float { animation: float-particle 4s ease-in-out infinite; }
     
     @keyframes fade-in-up {
       from { opacity: 0; transform: translateY(20px); }
@@ -145,6 +132,223 @@ const StyleInjection = () => (
       transform-origin: center center;
     }
   `}</style>
+);
+
+// --- COMPONENT: HELIX GRAPHIC ---
+const PeptideHelixGraphic = () => {
+  const width = 800;
+  const height = 500;
+  const amplitude = 80;
+  const frequency = 0.02;
+  const points = [];
+  for (let x = 0; x <= width; x += 5) { points.push(x); }
+
+  const strand1Path = points.map(x => {
+    const y = height / 2 + amplitude * Math.sin(x * frequency);
+    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
+  const strand2Path = points.map(x => {
+    const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
+  return (
+    <div className="relative w-full aspect-video overflow-hidden bg-emerald-50/10">
+      <svg viewBox="0 0 800 500" className="w-full h-full">
+        <defs>
+          <linearGradient id="strand-gradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
+            <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
+          </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        <g className="opacity-10" stroke="#059669" strokeWidth="0.5">
+           <line x1="0" y1="100" x2="800" y2="100" />
+           <line x1="0" y1="400" x2="800" y2="400" />
+           {Array.from({length: 10}).map((_, i) => (
+             <line key={i} x1={i * 80} y1="0" x2={i * 80} y2="500" strokeDasharray="5 5" />
+           ))}
+        </g>
+        <g stroke="#10b981" strokeWidth="1" strokeOpacity="0.3">
+          {points.filter((_, i) => i % 10 === 0).map((x, i) => {
+            const y1 = height / 2 + amplitude * Math.sin(x * frequency);
+            const y2 = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+            return <line key={i} x1={x} y1={y1} x2={x} y2={y2} className="animate-pulse" style={{animationDelay: `${i * 0.1}s`}} />;
+          })}
+        </g>
+        <path d={strand1Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" className="drop-shadow-lg" />
+        <path d={strand2Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" strokeOpacity="0.6" />
+        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
+          const y = height / 2 + amplitude * Math.sin(x * frequency);
+          return (
+            <g key={`s1-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2}s` }}>
+              <circle cx={x} cy={y} r="6" fill="#059669" filter="url(#glow)" />
+              <circle cx={x} cy={y} r="12" fill="#059669" fillOpacity="0.15" />
+            </g>
+          );
+        })}
+        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
+          const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+          return (
+            <g key={`s2-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2 + 1}s` }}>
+              <circle cx={x} cy={y} r="4" fill="#10b981" />
+              <circle cx={x} cy={y} r="8" fill="#10b981" fillOpacity="0.15" />
+            </g>
+          );
+        })}
+        <g transform="translate(600, 100)">
+          <rect x="0" y="0" width="140" height="50" rx="12" fill="rgba(255,255,255,0.9)" stroke="#d1fae5" strokeWidth="1" />
+          <circle cx="20" cy="25" r="4" fill="#059669" className="animate-ping" />
+          <text x="35" y="20" className="font-heading text-[10px] font-bold fill-slate-400 uppercase tracking-wide">Structure ID</text>
+          <text x="35" y="35" className="font-heading text-sm font-bold fill-emerald-900">Alpha-Helix 2B</text>
+        </g>
+      </svg>
+    </div>
+  );
+};
+
+// --- COMPONENT: HELIX LOADER ---
+const HelixLoader = () => {
+  return (
+    <div className="flex items-center gap-1.5 h-12 justify-center py-4">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="relative flex flex-col items-center justify-center h-full w-3">
+           <div 
+             className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full"
+             style={{ animation: `loader-orbit-1 1.5s infinite linear`, animationDelay: `${i * 0.15}s` }}
+           />
+           <div 
+             className="absolute w-2.5 h-2.5 bg-emerald-300 rounded-full"
+             style={{ animation: `loader-orbit-2 1.5s infinite linear`, animationDelay: `${i * 0.15}s` }}
+           />
+           <div 
+              className="w-0.5 h-8 bg-emerald-200/50"
+              style={{ transform: 'scaleY(0.5)' }}
+           />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// --- COMPONENT: PRODUCT CARD ---
+const ProductCard = ({ product }: { product: any }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+    if (videoRef.current && product.video) {
+      videoRef.current.play().catch(e => console.log("Video play error:", e));
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    if (videoRef.current && product.video) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
+  return (
+    <div 
+      className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-emerald-100/50 hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+       <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors overflow-hidden">
+          <img 
+            src={product.image} 
+            alt={product.name}
+            className={`w-full h-full object-contain drop-shadow-sm transition-all duration-500 ${isHovering && product.video ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}
+          />
+          {product.video && (
+             <video 
+               ref={videoRef}
+               src={product.video}
+               loop 
+               muted 
+               playsInline
+               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
+             />
+          )}
+          <div className="absolute top-4 right-4 z-10">
+            <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
+              product.status === 'In Stock' || product.status === 'Available' 
+                ? 'bg-emerald-50/90 text-emerald-700 border-emerald-200'
+                : product.status === 'New Arrival'
+                ? 'bg-indigo-50/90 text-indigo-700 border-indigo-200'
+                : 'bg-amber-50/90 text-amber-700 border-amber-200'
+            }`}>
+              {product.status}
+            </span>
+          </div>
+          {product.video && !isHovering && (
+             <div className="absolute bottom-4 right-4 bg-black/50 text-white p-1.5 rounded-full backdrop-blur-sm">
+                <Play className="w-3 h-3 fill-white" />
+             </div>
+          )}
+       </div>
+       <div className="p-6 flex flex-col flex-grow">
+          <div className="mb-4">
+             <div className="flex items-center justify-between mb-1">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{product.cat}</span>
+                <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">{product.code}</span>
+             </div>
+             <h4 className="font-heading font-bold text-lg text-slate-900 leading-tight group-hover:text-emerald-700 transition-colors">{product.name}</h4>
+          </div>
+          <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
+             <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                {product.purity}
+             </div>
+             <button className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                <ArrowUpRight className="w-4 h-4" />
+             </button>
+          </div>
+       </div>
+    </div>
+  );
+};
+
+// --- COMPONENT: CODED LOGO (SVG) ---
+const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
+  <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M40 20L20 30L20 50L40 60L60 50L60 30L40 20Z" stroke="#059669" strokeWidth="3" fill="url(#logo-gradient)"/>
+    <path d="M40 20V60" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M20 30L60 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M60 30L20 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="40" cy="40" r="4" fill="#ffffff" stroke="#059669" strokeWidth="2"/>
+    <text x="80" y="52" fontFamily="sans-serif" fontWeight="800" fontSize="32" fill="#1e293b" letterSpacing="-1">POLY</text>
+    <text x="175" y="52" fontFamily="sans-serif" fontWeight="300" fontSize="32" fill="#059669" letterSpacing="1">BIOTECH</text>
+    <defs>
+      <linearGradient id="logo-gradient" x1="20" y1="20" x2="60" y2="60" gradientUnits="userSpaceOnUse">
+        <stop stopColor="#d1fae5"/>
+        <stop offset="1" stopColor="#ffffff"/>
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+// --- COMPONENT: ABSTRACT MOLECULE BACKGROUND ---
+const MoleculeBackground = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+    <svg className="absolute top-0 right-0 w-[800px] h-[800px] opacity-30 transform translate-x-1/3 -translate-y-1/4" viewBox="0 0 200 200">
+      <defs>
+        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style={{ stopColor: '#10b981', stopOpacity: 0.2 }} />
+          <stop offset="100%" style={{ stopColor: '#059669', stopOpacity: 0 }} />
+        </linearGradient>
+      </defs>
+      <path fill="url(#grad1)" d="M45.7,-76.3C58.9,-69.3,69.1,-57.6,76.5,-44.9C83.9,-32.2,88.5,-18.5,86.7,-5.6C84.9,7.3,76.7,19.4,67.8,30.4C58.9,41.4,49.3,51.3,38.1,59.5C26.9,67.7,14.1,74.2,0.5,73.4C-13.1,72.6,-25.1,64.5,-36.6,56.3C-48.1,48.1,-59.1,39.8,-68.1,28.7C-77.1,17.6,-84.1,3.7,-82.1,-9C-80.1,-21.7,-69.1,-33.2,-57.8,-41.8C-46.5,-50.4,-34.9,-56.1,-22.9,-63.8C-10.9,-71.5,1.5,-81.2,13.4,-80.6C25.3,-80,32.5,-69.3,45.7,-76.3Z" transform="translate(100 100)" />
+    </svg>
+  </div>
 );
 
 // --- MOCK DATA & TRANSLATIONS ---
@@ -238,264 +442,6 @@ const products = [
   { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "https://placehold.co/600x600/f0fdf4/059669?text=Glow+70", video: null },
 ];
 
-// --- COMPONENT: CODED LOGO (SVG) ---
-const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
-  <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M40 20L20 30L20 50L40 60L60 50L60 30L40 20Z" stroke="#059669" strokeWidth="3" fill="url(#logo-gradient)"/>
-    <path d="M40 20V60" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M20 30L60 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M60 30L20 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
-    <circle cx="40" cy="40" r="4" fill="#ffffff" stroke="#059669" strokeWidth="2"/>
-    
-    <text x="80" y="52" fontFamily="sans-serif" fontWeight="800" fontSize="32" fill="#1e293b" letterSpacing="-1">POLY</text>
-    <text x="175" y="52" fontFamily="sans-serif" fontWeight="300" fontSize="32" fill="#059669" letterSpacing="1">BIOTECH</text>
-    
-    <defs>
-      <linearGradient id="logo-gradient" x1="20" y1="20" x2="60" y2="60" gradientUnits="userSpaceOnUse">
-        <stop stopColor="#d1fae5"/>
-        <stop offset="1" stopColor="#ffffff"/>
-      </linearGradient>
-    </defs>
-  </svg>
-);
-
-// --- COMPONENT: PRODUCT CARD WITH VIDEO HOVER ---
-const ProductCard = ({ product }: { product: any }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [isHovering, setIsHovering] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-    if (videoRef.current && product.video) {
-      videoRef.current.play().catch(e => console.log("Video play error:", e));
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-    if (videoRef.current && product.video) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-  };
-
-  return (
-    <div 
-      className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-emerald-100/50 hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-       
-       {/* Product Image/Video Area */}
-       <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors overflow-hidden">
-          
-           {/* Image (Always present, hidden when video plays) */}
-           <img 
-            src={product.image} 
-            alt={product.name}
-            className={`w-full h-full object-contain drop-shadow-sm transition-all duration-500 ${isHovering && product.video ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}
-          />
-
-          {/* Video (Only if exists) */}
-          {product.video && (
-             <video 
-               ref={videoRef}
-               src={product.video}
-               loop 
-               muted 
-               playsInline
-               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
-             />
-          )}
-
-          {/* Status Badge */}
-          <div className="absolute top-4 right-4 z-10">
-            <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
-              product.status === 'In Stock' || product.status === 'Available' 
-                ? 'bg-emerald-50/90 text-emerald-700 border-emerald-200'
-                : product.status === 'New Arrival'
-                ? 'bg-indigo-50/90 text-indigo-700 border-indigo-200'
-                : 'bg-amber-50/90 text-amber-700 border-amber-200'
-            }`}>
-              {product.status}
-            </span>
-          </div>
-
-           {/* Video Indicator (Optional) */}
-           {product.video && !isHovering && (
-             <div className="absolute bottom-4 right-4 bg-black/50 text-white p-1.5 rounded-full backdrop-blur-sm">
-                <Play className="w-3 h-3 fill-white" />
-             </div>
-          )}
-       </div>
-
-       {/* Product Details */}
-       <div className="p-6 flex flex-col flex-grow">
-          <div className="mb-4">
-             <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{product.cat}</span>
-                <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100">{product.code}</span>
-             </div>
-             <h4 className="font-heading font-bold text-lg text-slate-900 leading-tight group-hover:text-emerald-700 transition-colors">{product.name}</h4>
-          </div>
-          
-          <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
-             <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                {product.purity}
-             </div>
-             <button className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-emerald-600 group-hover:text-white transition-all">
-                <ArrowUpRight className="w-4 h-4" />
-             </button>
-          </div>
-       </div>
-    </div>
-  );
-};
-
-// --- COMPONENT: HELIX GRAPHIC ---
-const PeptideHelixGraphic = () => {
-  const width = 800;
-  const height = 500;
-  const amplitude = 80;
-  const frequency = 0.02;
-  const points = [];
-  for (let x = 0; x <= width; x += 5) { points.push(x); }
-
-  const strand1Path = points.map(x => {
-    const y = height / 2 + amplitude * Math.sin(x * frequency);
-    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-
-  const strand2Path = points.map(x => {
-    const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-
-  return (
-    <div className="relative w-full aspect-video overflow-hidden bg-emerald-50/10">
-      <svg viewBox="0 0 800 500" className="w-full h-full">
-        <defs>
-          <linearGradient id="strand-gradient" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
-            <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
-          </linearGradient>
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-
-        {/* Background Grid Lines */}
-        <g className="opacity-10" stroke="#059669" strokeWidth="0.5">
-           <line x1="0" y1="100" x2="800" y2="100" />
-           <line x1="0" y1="400" x2="800" y2="400" />
-           {/* Vertical grid */}
-           {Array.from({length: 10}).map((_, i) => (
-             <line key={i} x1={i * 80} y1="0" x2={i * 80} y2="500" strokeDasharray="5 5" />
-           ))}
-        </g>
-
-        {/* Connecting Bonds (Hydrogen Bonds) */}
-        <g stroke="#10b981" strokeWidth="1" strokeOpacity="0.3">
-          {points.filter((_, i) => i % 10 === 0).map((x, i) => {
-            const y1 = height / 2 + amplitude * Math.sin(x * frequency);
-            const y2 = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-            return <line key={i} x1={x} y1={y1} x2={x} y2={y2} className="animate-pulse" style={{animationDelay: `${i * 0.1}s`}} />;
-          })}
-        </g>
-
-        {/* Strand 1 - The Ribbon */}
-        <path d={strand1Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" className="drop-shadow-lg" />
-        
-        {/* Strand 2 - The Ribbon */}
-        <path d={strand2Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" strokeOpacity="0.6" />
-
-        {/* Atoms on Strand 1 */}
-        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
-          const y = height / 2 + amplitude * Math.sin(x * frequency);
-          return (
-            <g key={`s1-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2}s` }}>
-              <circle cx={x} cy={y} r="6" fill="#059669" filter="url(#glow)" />
-              <circle cx={x} cy={y} r="12" fill="#059669" fillOpacity="0.15" />
-            </g>
-          );
-        })}
-
-        {/* Atoms on Strand 2 */}
-        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
-          const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-          return (
-            <g key={`s2-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2 + 1}s` }}>
-              <circle cx={x} cy={y} r="4" fill="#10b981" />
-              <circle cx={x} cy={y} r="8" fill="#10b981" fillOpacity="0.15" />
-            </g>
-          );
-        })}
-
-        {/* Highlight Data Tag */}
-        <g transform="translate(600, 100)">
-          <rect x="0" y="0" width="140" height="50" rx="12" fill="rgba(255,255,255,0.9)" stroke="#d1fae5" strokeWidth="1" />
-          <circle cx="20" cy="25" r="4" fill="#059669" className="animate-ping" />
-          <text x="35" y="20" className="font-heading text-[10px] font-bold fill-slate-400 uppercase tracking-wide">Structure ID</text>
-          <text x="35" y="35" className="font-heading text-sm font-bold fill-emerald-900">Alpha-Helix 2B</text>
-        </g>
-      </svg>
-    </div>
-  );
-};
-
-// --- COMPONENT: HELIX LOADER ---
-const HelixLoader = () => {
-  return (
-    <div className="flex items-center gap-1.5 h-12 justify-center py-4">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="relative flex flex-col items-center justify-center h-full w-3">
-           {/* Top Strand Particle */}
-           <div 
-             className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full"
-             style={{ 
-               animation: `loader-orbit-1 1.5s infinite linear`, 
-               animationDelay: `${i * 0.15}s` 
-             }}
-           />
-           {/* Bottom Strand Particle */}
-           <div 
-             className="absolute w-2.5 h-2.5 bg-emerald-300 rounded-full"
-             style={{ 
-               animation: `loader-orbit-2 1.5s infinite linear`, 
-               animationDelay: `${i * 0.15}s` 
-             }}
-           />
-           {/* Connecting Bond (Optional visual aid, fades in/out) */}
-           <div 
-              className="w-0.5 h-8 bg-emerald-200/50"
-              style={{
-                 transform: 'scaleY(0.5)', // Static scale for the bond line appearance
-              }}
-           />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-// --- COMPONENT: ABSTRACT MOLECULE BACKGROUND ---
-const MoleculeBackground = () => (
-  <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-    <svg className="absolute top-0 right-0 w-[800px] h-[800px] opacity-30 transform translate-x-1/3 -translate-y-1/4" viewBox="0 0 200 200">
-      <defs>
-        <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style={{ stopColor: '#10b981', stopOpacity: 0.2 }} />
-          <stop offset="100%" style={{ stopColor: '#059669', stopOpacity: 0 }} />
-        </linearGradient>
-      </defs>
-      <path fill="url(#grad1)" d="M45.7,-76.3C58.9,-69.3,69.1,-57.6,76.5,-44.9C83.9,-32.2,88.5,-18.5,86.7,-5.6C84.9,7.3,76.7,19.4,67.8,30.4C58.9,41.4,49.3,51.3,38.1,59.5C26.9,67.7,14.1,74.2,0.5,73.4C-13.1,72.6,-25.1,64.5,-36.6,56.3C-48.1,48.1,-59.1,39.8,-68.1,28.7C-77.1,17.6,-84.1,3.7,-82.1,-9C-80.1,-21.7,-69.1,-33.2,-57.8,-41.8C-46.5,-50.4,-34.9,-56.1,-22.9,-63.8C-10.9,-71.5,1.5,-81.2,13.4,-80.6C25.3,-80,32.5,-69.3,45.7,-76.3Z" transform="translate(100 100)" />
-    </svg>
-  </div>
-);
-
 // --- MAIN APP COMPONENT ---
 const App = () => {
   const [lang, setLang] = useState<keyof typeof translations>('en');
@@ -551,8 +497,6 @@ const App = () => {
       let panelData = aiBloodPanel;
       
       if (aiBloodFile) {
-        // In a real app, this is where OCR/PDF parsing would happen
-        // For this demo, we simulate extraction if the user hasn't typed anything else
         if (panelData.includes("[File Attached")) {
            panelData = "Standard Male Hormone Panel (Simulated Extraction): Total T: 350 ng/dL, Free T: 8 ng/dL, Estradiol: 22 pg/mL, IGF-1: 110 ng/mL, Cholesterol: 210 mg/dL.";
         }
@@ -612,7 +556,7 @@ const App = () => {
       <StyleInjection />
       <MoleculeBackground />
 
-      {/* --- NAVIGATION (Floating Pill with 95% Transparency) --- */}
+      {/* --- NAVIGATION --- */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
         <nav className={`pointer-events-auto transition-all duration-500 ease-out ${scrolled ? 'w-full max-w-5xl glass-nav rounded-full shadow-lg py-3 px-6' : 'w-full max-w-7xl bg-transparent py-4 px-4'}`}>
           <div className="flex justify-between items-center">
@@ -725,7 +669,6 @@ const App = () => {
                  </div>
               </div>
               <div className="rounded-xl overflow-hidden bg-white/50 border border-white/60 shadow-inner">
-                {/* 3D Helix Graphic restored here */}
                 <PeptideHelixGraphic />
               </div>
               
