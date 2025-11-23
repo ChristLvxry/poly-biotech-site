@@ -457,7 +457,7 @@ const MoleculeBackground = () => (
 );
 
 // --- MAIN APP COMPONENT ---
-const App = () => {
+const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
   const [lang, setLang] = useState('en');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
