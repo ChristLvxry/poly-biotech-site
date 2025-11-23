@@ -54,8 +54,9 @@ const StyleInjection = () => (
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
     
+    /* Custom class for the 95% transparent header */
     .glass-nav {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.05); /* 95% transparent */
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -85,12 +86,24 @@ const StyleInjection = () => (
         radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.4) 0px, transparent 50%);
     }
 
-    /* Animations */
+    .glow-text {
+      text-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
+    }
+
     @keyframes float-particle {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-10px); }
     }
-    .animate-float { animation: float-particle 4s ease-in-out infinite; }
+
+    .animate-float {
+      animation: float-particle 4s ease-in-out infinite;
+    }
+    
+    /* Animation for the new helix */
+    @keyframes helix-spin {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
     
     @keyframes fade-in-up {
       from { opacity: 0; transform: translateY(20px); }
@@ -213,28 +226,30 @@ const translations: { [key: string]: Translations } = {
 
 // --- PRODUCT LIST ---
 const products = [
-  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "BPC-157.webp", video: "bpc157_spin.mp4" },
-  { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "BPC-157_TB-500_Blend.webp", video: null },
-  { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "GHK-Cu.webp", video: null },
-  { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "CJC-1295_No_DAC.webp", video: null },
-  { name: "CJC-1295 + Ipamorelin", code: "BLEND-02", cat: "Growth Blend", purity: "≥99%", status: "Available", image: "CJC-1295_Ipamorelin.webp", video: null },
-  { name: "Ipamorelin", code: "IPA-10", cat: "Growth", purity: "≥99%", status: "In Stock", image: "Ipamorelin.webp", video: null },
-  { name: "AOD-9604", code: "AOD-05", cat: "Fat Loss", purity: "≥99%", status: "Low Stock", image: "AOD-9604.webp", video: null },
-  { name: "5-Amino-1MQ", code: "5AM-10", cat: "Metabolic", purity: "≥99%", status: "Limited", image: "5-Amino-1MQ.webp", video: null },
-  { name: "GHRP-6", code: "GHRP-10", cat: "Growth", purity: "≥99%", status: "Available", image: "GHRP-6.webp", video: null },
-  { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "Glow70.webp", video: null },
+  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157", video: "bpc157_spin.mp4" },
+  { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB", video: null },
+  { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHK-Cu", video: null },
+  { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=CJC-1295", video: null },
+  { name: "CJC-1295 + Ipamorelin", code: "BLEND-02", cat: "Growth Blend", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+CJC+Ipa", video: null },
+  { name: "Ipamorelin", code: "IPA-10", cat: "Growth", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Ipamorelin", video: null },
+  { name: "AOD-9604", code: "AOD-05", cat: "Fat Loss", purity: "≥99%", status: "Low Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=AOD-9604", video: null },
+  { name: "5-Amino-1MQ", code: "5AM-10", cat: "Metabolic", purity: "≥99%", status: "Limited", image: "https://placehold.co/600x600/f0fdf4/059669?text=5-Amino-1MQ", video: null },
+  { name: "GHRP-6", code: "GHRP-10", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHRP-6", video: null },
+  { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "https://placehold.co/600x600/f0fdf4/059669?text=Glow+70", video: null },
 ];
 
 // --- COMPONENT: CODED LOGO (SVG) ---
-const PolyBiotechLogo = ({ className = "h-10" }) => (
+const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
   <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M40 20L20 30L20 50L40 60L60 50L60 30L40 20Z" stroke="#059669" strokeWidth="3" fill="url(#logo-gradient)"/>
     <path d="M40 20V60" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <path d="M20 30L60 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <path d="M60 30L20 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <circle cx="40" cy="40" r="4" fill="#ffffff" stroke="#059669" strokeWidth="2"/>
+    
     <text x="80" y="52" fontFamily="sans-serif" fontWeight="800" fontSize="32" fill="#1e293b" letterSpacing="-1">POLY</text>
     <text x="175" y="52" fontFamily="sans-serif" fontWeight="300" fontSize="32" fill="#059669" letterSpacing="1">BIOTECH</text>
+    
     <defs>
       <linearGradient id="logo-gradient" x1="20" y1="20" x2="60" y2="60" gradientUnits="userSpaceOnUse">
         <stop stopColor="#d1fae5"/>
@@ -270,12 +285,18 @@ const ProductCard = ({ product }: { product: any }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
+       
+       {/* Product Image/Video Area */}
        <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors overflow-hidden">
-          <img 
+          
+           {/* Image (Always present, hidden when video plays) */}
+           <img 
             src={product.image} 
             alt={product.name}
             className={`w-full h-full object-contain drop-shadow-sm transition-all duration-500 ${isHovering && product.video ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}
           />
+
+          {/* Video (Only if exists) */}
           {product.video && (
              <video 
                ref={videoRef}
@@ -286,6 +307,8 @@ const ProductCard = ({ product }: { product: any }) => {
                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
              />
           )}
+
+          {/* Status Badge */}
           <div className="absolute top-4 right-4 z-10">
             <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
               product.status === 'In Stock' || product.status === 'Available' 
@@ -297,12 +320,16 @@ const ProductCard = ({ product }: { product: any }) => {
               {product.status}
             </span>
           </div>
-          {product.video && !isHovering && (
+
+           {/* Video Indicator (Optional) */}
+           {product.video && !isHovering && (
              <div className="absolute bottom-4 right-4 bg-black/50 text-white p-1.5 rounded-full backdrop-blur-sm">
                 <Play className="w-3 h-3 fill-white" />
              </div>
           )}
        </div>
+
+       {/* Product Details */}
        <div className="p-6 flex flex-col flex-grow">
           <div className="mb-4">
              <div className="flex items-center justify-between mb-1">
@@ -311,6 +338,7 @@ const ProductCard = ({ product }: { product: any }) => {
              </div>
              <h4 className="font-heading font-bold text-lg text-slate-900 leading-tight group-hover:text-emerald-700 transition-colors">{product.name}</h4>
           </div>
+          
           <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
              <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
@@ -325,17 +353,14 @@ const ProductCard = ({ product }: { product: any }) => {
   );
 };
 
-// --- COMPONENT: IMPROVED HELIX ANIMATION ---
+// --- COMPONENT: HELIX GRAPHIC ---
 const PeptideHelixGraphic = () => {
   const width = 800;
   const height = 500;
   const amplitude = 80;
   const frequency = 0.02;
   const points = [];
-  
-  for (let x = 0; x <= width; x += 5) {
-    points.push(x);
-  }
+  for (let x = 0; x <= width; x += 5) { points.push(x); }
 
   const strand1Path = points.map(x => {
     const y = height / 2 + amplitude * Math.sin(x * frequency);
@@ -421,7 +446,7 @@ const PeptideHelixGraphic = () => {
   );
 };
 
-// --- COMPONENT: HELIX LOADER (NEW) ---
+// --- COMPONENT: HELIX LOADER ---
 const HelixLoader = () => {
   return (
     <div className="flex items-center gap-1.5 h-12 justify-center py-4">
@@ -514,7 +539,15 @@ const App = () => {
     setAiResult('');
 
     try {
-      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+      // Safely access API key, defaulting to empty string if not available
+      // Using try-catch to handle environments where process might be undefined
+      let apiKey = "";
+      try {
+        apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+      } catch (e) {
+        // Ignore error if process is not defined
+      }
+
       let panelData = aiBloodPanel;
       
       if (aiBloodFile) {
@@ -692,6 +725,7 @@ const App = () => {
                  </div>
               </div>
               <div className="rounded-xl overflow-hidden bg-white/50 border border-white/60 shadow-inner">
+                {/* 3D Helix Graphic restored here */}
                 <PeptideHelixGraphic />
               </div>
               
