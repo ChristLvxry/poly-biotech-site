@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, ReactNode, useRef } from 'react';
+import React, { useState, useEffect, useRef, ReactNode } from 'react';
 import { 
   Microscope, 
   FlaskConical, 
@@ -227,7 +227,7 @@ const translations: { [key: string]: Translations } = {
 // --- UPDATED PRODUCT LIST WITH PLACEHOLDER IMAGES FOR PREVIEW ---
 // NOTE: Replace these URLs with your local file paths (e.g., "BPC-157.webp") before deployment.
 const products = [
-  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157", video: null },
+  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157", video: "bpc157_spin.mp4" },
   { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB", video: null },
   { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHK-Cu", video: null },
   { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=CJC-1295", video: null },
@@ -240,7 +240,6 @@ const products = [
 ];
 
 // --- COMPONENT: CODED LOGO (SVG) ---
-// This ensures the logo is always visible in preview without needing external files
 const PolyBiotechLogo = ({ className = "h-10" }) => (
   <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Icon: A stylized molecule/leaf hybrid */}
@@ -314,7 +313,7 @@ const ProductCard = ({ product }: { product: any }) => {
           )}
 
           {/* Status Badge */}
-          <div className="absolute top-4 right-4">
+          <div className="absolute top-4 right-4 z-10">
             <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
               product.status === 'In Stock' || product.status === 'Available' 
                 ? 'bg-emerald-50/90 text-emerald-700 border-emerald-200'
@@ -675,14 +674,14 @@ const App = () => {
       {/* --- HERO SECTION WITH IMAGE BACKGROUND --- */}
       <section className="relative pt-48 pb-16 lg:pt-64 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
         
-        {/* HERO BACKGROUND IMAGE */}
+        {/* HERO BACKGROUND IMAGE - Using image_729364.jpg */}
         <div className="absolute inset-0 z-0">
             <img 
                src="image_729364.jpg" 
                alt="Laboratory Background" 
                className="w-full h-full object-cover opacity-10" 
             />
-            {/* Gradient Overlay */}
+            {/* Gradient Overlay to ensure text readability */}
             <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
         </div>
 
@@ -727,6 +726,7 @@ const App = () => {
                  </div>
               </div>
               <div className="rounded-xl overflow-hidden bg-white/50 border border-white/60 shadow-inner">
+                {/* 3D Helix Graphic restored here */}
                 <PeptideHelixGraphic />
               </div>
               
