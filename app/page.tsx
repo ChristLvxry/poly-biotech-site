@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode, useRef } from 'react';
 import { 
   Microscope, 
   FlaskConical, 
@@ -25,7 +25,8 @@ import {
   Loader2,
   Copy,
   Upload,
-  Box
+  Box,
+  Play
 } from 'lucide-react';
 
 // --- STYLE INJECTION FOR FONTS & ANIMATIONS ---
@@ -103,6 +104,18 @@ const StyleInjection = () => (
       0% { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
+    
+    @keyframes fade-in-up {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in-up { animation: fade-in-up 0.8s ease-out forwards; }
+
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
 
     /* Modified animation: Float only, no tilt */
     @keyframes subtle-tilt-float {
@@ -218,22 +231,20 @@ const translations: { [key: string]: Translations } = {
 };
 
 // --- UPDATED PRODUCT LIST WITH PLACEHOLDER IMAGES FOR PREVIEW ---
-// NOTE: Replace these URLs with your local file paths (e.g., "BPC-157.webp") before deployment.
 const products = [
-  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157" },
-  { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB" },
-  { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHK-Cu" },
-  { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=CJC-1295" },
-  { name: "CJC-1295 + Ipamorelin", code: "BLEND-02", cat: "Growth Blend", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+CJC+Ipa" },
-  { name: "Ipamorelin", code: "IPA-10", cat: "Growth", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Ipamorelin" },
-  { name: "AOD-9604", code: "AOD-05", cat: "Fat Loss", purity: "≥99%", status: "Low Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=AOD-9604" },
-  { name: "5-Amino-1MQ", code: "5AM-10", cat: "Metabolic", purity: "≥99%", status: "Limited", image: "https://placehold.co/600x600/f0fdf4/059669?text=5-Amino-1MQ" },
-  { name: "GHRP-6", code: "GHRP-10", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHRP-6" },
-  { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "https://placehold.co/600x600/f0fdf4/059669?text=Glow+70" },
+  { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157", video: null },
+  { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB", video: null },
+  { name: "GHK-Cu", code: "GHK-50", cat: "Regeneration", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHK-Cu", video: null },
+  { name: "CJC-1295 (No DAC)", code: "CJC-ND", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=CJC-1295", video: null },
+  { name: "CJC-1295 + Ipamorelin", code: "BLEND-02", cat: "Growth Blend", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+CJC+Ipa", video: null },
+  { name: "Ipamorelin", code: "IPA-10", cat: "Growth", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Ipamorelin", video: null },
+  { name: "AOD-9604", code: "AOD-05", cat: "Fat Loss", purity: "≥99%", status: "Low Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=AOD-9604", video: null },
+  { name: "5-Amino-1MQ", code: "5AM-10", cat: "Metabolic", purity: "≥99%", status: "Limited", image: "https://placehold.co/600x600/f0fdf4/059669?text=5-Amino-1MQ", video: null },
+  { name: "GHRP-6", code: "GHRP-10", cat: "Growth", purity: "≥99%", status: "Available", image: "https://placehold.co/600x600/f0fdf4/059669?text=GHRP-6", video: null },
+  { name: "Glow 70", code: "GLOW-70", cat: "Cosmetic Blend", purity: "≥99%", status: "New Arrival", image: "https://placehold.co/600x600/f0fdf4/059669?text=Glow+70", video: null },
 ];
 
 // --- COMPONENT: CODED LOGO (SVG) ---
-// This ensures the logo is always visible in preview without needing external files
 const PolyBiotechLogo = ({ className = "h-10" }) => (
   <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
     {/* Icon: A stylized molecule/leaf hybrid */}
@@ -257,21 +268,57 @@ const PolyBiotechLogo = ({ className = "h-10" }) => (
   </svg>
 );
 
-// --- COMPONENT: PRODUCT CARD WITH FALLBACK ---
+// --- COMPONENT: PRODUCT CARD WITH VIDEO HOVER ---
 const ProductCard = ({ product }: { product: any }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isHovering, setIsHovering] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+    if (videoRef.current && product.video) {
+      videoRef.current.play().catch(e => console.log("Video play error:", e));
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+    if (videoRef.current && product.video) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
   return (
-    <div className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-emerald-100/50 hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col">
+    <div 
+      className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-emerald-100/50 hover:-translate-y-2 transition-all duration-300 overflow-hidden flex flex-col"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
        
-       {/* Product Image Area */}
-       <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors">
+       {/* Product Image/Video Area */}
+       <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors overflow-hidden">
+          
+          {/* Image (Always present, hidden when video plays) */}
           <img 
             src={product.image} 
             alt={product.name}
-            className="w-full h-full object-contain drop-shadow-sm group-hover:scale-110 transition-transform duration-500"
+            className={`w-full h-full object-contain drop-shadow-sm transition-all duration-500 ${isHovering && product.video ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}
           />
+
+          {/* Video (Only if exists) */}
+          {product.video && (
+             <video 
+               ref={videoRef}
+               src={product.video}
+               loop 
+               muted 
+               playsInline
+               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
+             />
+          )}
           
           {/* Status Badge */}
-          <div className="absolute top-4 right-4">
+          <div className="absolute top-4 right-4 z-10">
             <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
               product.status === 'In Stock' || product.status === 'Available' 
                 ? 'bg-emerald-50/90 text-emerald-700 border-emerald-200'
@@ -282,6 +329,13 @@ const ProductCard = ({ product }: { product: any }) => {
               {product.status}
             </span>
           </div>
+
+          {/* Video Indicator (Optional) */}
+          {product.video && !isHovering && (
+             <div className="absolute bottom-4 right-4 bg-black/50 text-white p-1.5 rounded-full backdrop-blur-sm">
+                <Play className="w-3 h-3 fill-white" />
+             </div>
+          )}
        </div>
 
        {/* Product Details */}
@@ -457,8 +511,8 @@ const MoleculeBackground = () => (
 );
 
 // --- MAIN APP COMPONENT ---
-const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
-  const [lang, setLang] = useState('en');
+const App = () => {
+  const [lang, setLang] = useState<keyof typeof translations>('en');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   
@@ -499,7 +553,7 @@ const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
     setAiResult('');
 
     try {
-      const apiKey = ""; // Injected at runtime
+      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
       let panelData = aiBloodPanel;
       
       if (aiBloodFile) {
@@ -582,7 +636,7 @@ const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
                   href={`#${key}`} 
                   className={`text-sm font-medium px-4 py-2 rounded-full transition-all hover:bg-emerald-50 hover:text-emerald-800 ${scrolled ? 'text-slate-700' : 'text-slate-800'}`}
                 >
-                  {label as React.ReactNode}
+                  {label as ReactNode}
                 </a>
               ))}
             </div>
@@ -615,7 +669,7 @@ const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
           <div className="flex flex-col gap-6 text-center">
              {Object.entries(t.nav).map(([key, label]) => (
                 <a key={key} href={`#${key}`} className="text-2xl font-heading font-medium text-slate-900" onClick={() => setIsMenuOpen(false)}>
-                  {label as React.ReactNode}
+                  {label as ReactNode}
                 </a>
               ))}
           </div>
