@@ -250,7 +250,7 @@ const PeptideHelixGraphic = () => {
   const height = 500;
   const amplitude = 80;
   const frequency = 0.02;
-  const points = [];
+  const points: number[] = [];
   for (let x = 0; x <= width; x += 5) { points.push(x); }
 
   const strand1Path = points.map(x => {
@@ -442,21 +442,23 @@ const MoleculeBackground = () => (
   </div>
 );
 
+type Lang = 'en' | 'es';
+
 // --- MAIN APP COMPONENT ---
-const App = () => {
-  const [lang, setLang] = useState<keyof typeof translations>('en');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+const App: React.FC = () => {
+  const [lang, setLang] = useState<Lang>('en');
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [scrolled, setScrolled] = useState<boolean>(false);
   
   // AI Feature State
-  const [aiBloodPanel, setAiBloodPanel] = useState('');
+  const [aiBloodPanel, setAiBloodPanel] = useState<string>('');
   const [aiBloodFile, setAiBloodFile] = useState<File | null>(null);
-  const [aiBiometrics, setAiBiometrics] = useState('');
-  const [aiGoal, setAiGoal] = useState('');
-  const [aiAdditionalInfo, setAiAdditionalInfo] = useState('');
-  const [aiResult, setAiResult] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generated, setGenerated] = useState(false);
+  const [aiBiometrics, setAiBiometrics] = useState<string>('');
+  const [aiGoal, setAiGoal] = useState<string>(''); // 👈 explicitly string
+  const [aiAdditionalInfo, setAiAdditionalInfo] = useState<string>('');
+  const [aiResult, setAiResult] = useState<string>('');
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [generated, setGenerated] = useState<boolean>(false);
 
   const t = translations[lang];
 
@@ -499,7 +501,7 @@ const App = () => {
       Subject Profile:
       - Biometrics: ${aiBiometrics}
       - Blood Panel Data: ${panelData}
-      - Primary Goal: ${String(aiGoal).toUpperCase()}
+      - Primary Goal: ${aiGoal.toUpperCase()}
       - Additional Context/Goals: ${aiAdditionalInfo || 'None provided'}
 
       Based on these parameters, recommend the top 2-3 research peptides. For each, explain:
@@ -839,7 +841,8 @@ const App = () => {
                         {generated && !isGenerating && (
                            <div className="prose-sm animate-fade-in">
                               <div className="text-xs font-mono text-emerald-600 mb-4 pb-2 border-b border-emerald-100/50">
-                                 // SUBJECT GOAL: {String(aiGoal).toUpperCase()}
+                                 {/* SUBJECT GOAL output */}
+                                 // SUBJECT GOAL: {aiGoal.toUpperCase()}
                               </div>
                               {renderText(aiResult)}
                            </div>
