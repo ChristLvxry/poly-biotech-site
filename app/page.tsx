@@ -118,7 +118,7 @@ const StyleInjection = () => (
       25% { transform: translateY(-15px) scale(1); opacity: 1; z-index: 10; }
       50% { transform: translateY(0px) scale(0.7); opacity: 0.6; z-index: 0; }
       75% { transform: translateY(15px) scale(1); opacity: 1; z-index: 10; }
-      100% { transform: translateY(0px) scale(0.7); opacity: 0.6; z-index: 0; }
+      100% { transform: translateY(0px) scale(1); opacity: 1; z-index: 10; }
     }
 
     /* Subtle Tilt Float Animation */
@@ -448,6 +448,7 @@ const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   
+  // AI Feature State
   const [aiBloodPanel, setAiBloodPanel] = useState('');
   const [aiBloodFile, setAiBloodFile] = useState<File | null>(null);
   const [aiBiometrics, setAiBiometrics] = useState('');
@@ -484,13 +485,7 @@ const App = () => {
     setAiResult('');
 
     try {
-      let apiKey = "";
-      try {
-        apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
-      } catch (e) {
-        // Ignore error if process is not defined
-      }
-
+      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
       let panelData = aiBloodPanel;
       
       if (aiBloodFile) {
@@ -538,6 +533,7 @@ const App = () => {
     }
   };
 
+  // Helper to render markdown-like text safely
   const renderText = (text: string) => {
     return text.split('\n').map((line, i) => {
       if (line.startsWith('###')) return <h3 key={i} className="text-lg font-bold text-emerald-800 mt-4 mb-2">{line.replace('###', '')}</h3>;
@@ -552,12 +548,17 @@ const App = () => {
       <StyleInjection />
       <MoleculeBackground />
 
+      {/* --- NAVIGATION (Floating Pill with 95% Transparency) --- */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
         <nav className={`pointer-events-auto transition-all duration-500 ease-out ${scrolled ? 'w-full max-w-5xl glass-nav rounded-full shadow-lg py-3 px-6' : 'w-full max-w-7xl bg-transparent py-4 px-4'}`}>
           <div className="flex justify-between items-center">
+            
+            {/* Logo */}
             <div className="flex items-center gap-3 group cursor-pointer">
               <PolyBiotechLogo className="w-auto h-10" />
             </div>
+
+            {/* Desktop Links */}
             <div className={`hidden md:flex items-center ${scrolled ? 'space-x-1' : 'space-x-6'}`}>
               {Object.entries(t.nav).map(([key, label]) => (
                 <a 
@@ -569,25 +570,30 @@ const App = () => {
                 </a>
               ))}
             </div>
+
+            {/* Utilities */}
             <div className="flex items-center gap-3">
-               <button 
-                 onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
-                 className="hidden md:flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-full border border-slate-300 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
-               >
-                 <Globe className="w-3 h-3" />
-                 {lang.toUpperCase()}
-               </button>
-               <button className="bg-slate-900 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-full text-sm font-heading font-medium transition-all shadow-lg hover:shadow-emerald-300/50 hover:-translate-y-0.5 flex items-center gap-2">
-                 Portal <ArrowUpRight className="w-3 h-3" />
-               </button>
-               <button className="md:hidden p-2 text-slate-700 bg-white/70 rounded-full" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                 {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-               </button>
+              <button 
+                onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
+                className="hidden md:flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-full border border-slate-300 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
+              >
+                <Globe className="w-3 h-3" />
+                {lang.toUpperCase()}
+              </button>
+              <button className="bg-slate-900 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-full text-sm font-heading font-medium transition-all shadow-lg hover:shadow-emerald-300/50 hover:-translate-y-0.5 flex items-center gap-2">
+                Portal <ArrowUpRight className="w-3 h-3" />
+              </button>
+              
+              {/* Mobile Toggle */}
+              <button className="md:hidden p-2 text-slate-700 bg-white/70 rounded-full" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </nav>
       </div>
       
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white/98 backdrop-blur-xl pt-32 px-6 md:hidden animate-fade-in">
           <div className="flex flex-col gap-6 text-center">
@@ -600,13 +606,17 @@ const App = () => {
         </div>
       )}
 
+      {/* --- HERO SECTION WITH IMAGE BACKGROUND --- */}
       <section className="relative pt-48 pb-16 lg:pt-64 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
+        
+        {/* HERO BACKGROUND IMAGE - Using image_729364.jpg */}
         <div className="absolute inset-0 z-0">
             <img 
                src="image_729364.jpg" 
                alt="Laboratory Background" 
                className="w-full h-full object-cover opacity-10" 
             />
+            {/* Gradient Overlay to ensure text readability */}
             <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
         </div>
 
@@ -616,15 +626,18 @@ const App = () => {
               <span className="w-2 h-2 bg-emerald-600 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.8)] animate-pulse" />
               <span className="text-xs font-bold text-emerald-900 tracking-wider uppercase font-heading">{t.hero.badge}</span>
             </div>
+            
             <h1 className="text-5xl lg:text-7xl font-bold text-slate-900 leading-[0.95] tracking-tight mb-8 font-heading">
               {t.hero.title} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-teal-500 italic font-medium">
                 {t.hero.titleSpan}
               </span>
             </h1>
+            
             <p className="text-lg md:text-xl text-slate-700 leading-relaxed max-w-xl mb-10 font-light">
               {t.hero.subtitle}
             </p>
+
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-heading font-semibold shadow-xl shadow-emerald-200/50 hover:shadow-emerald-300/50 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group">
                 {t.hero.ctaPrimary}
@@ -636,8 +649,10 @@ const App = () => {
             </div>
           </div>
 
+          {/* Graphic Side */}
           <div className="lg:col-span-5 relative lg:translate-x-8">
             <div className="absolute -inset-4 bg-gradient-to-tr from-emerald-300/40 to-teal-200/40 rounded-[2rem] blur-2xl -z-10" />
+            
             <div className="glass-card rounded-[2rem] p-6 relative">
               <div className="absolute top-6 right-6 z-10">
                  <div className="bg-white/90 backdrop-blur shadow-sm rounded-full px-4 py-1.5 flex items-center gap-2 border border-emerald-100">
@@ -646,8 +661,10 @@ const App = () => {
                  </div>
               </div>
               <div className="rounded-xl overflow-hidden bg-white/50 border border-white/60 shadow-inner">
+                {/* 3D Helix Graphic restored here */}
                 <PeptideHelixGraphic />
               </div>
+              
               <div className="absolute -bottom-6 -left-6 bg-white/95 backdrop-blur p-5 rounded-2xl shadow-xl border border-white max-w-[16rem]">
                 <div className="flex items-center gap-4 mb-3">
                   <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
@@ -667,12 +684,16 @@ const App = () => {
         </div>
       </section>
 
+      {/* --- NEW SECTION: AI RESEARCH ASSISTANT (GEMINI INTEGRATION) --- */}
       <section className="py-20 bg-gradient-to-b from-white to-emerald-50/50 relative border-t border-emerald-100/50 overflow-hidden">
+         {/* Background details for this section */}
          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-50 to-transparent -z-10" />
          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-100/20 rounded-full blur-3xl -z-10" />
 
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="grid lg:grid-cols-12 gap-12">
+               
+               {/* Left: Tool Interface */}
                <div className="lg:col-span-7">
                  <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
@@ -693,6 +714,7 @@ const App = () => {
                                  <Upload className="w-3 h-3" /> Upload PDF/Image
                               </label>
                           </div>
+                          
                           {aiBloodFile ? (
                               <div className="w-full px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between group transition-colors">
                                   <div className="flex items-center gap-3 overflow-hidden">
@@ -776,9 +798,11 @@ const App = () => {
                  </div>
                </div>
 
+               {/* Right: Output Area */}
                <div className="lg:col-span-5 flex flex-col h-full">
                   <div className={`flex-1 rounded-3xl border border-slate-200 bg-slate-50 overflow-hidden relative transition-all duration-500 animate-tilt-float ${generated ? 'shadow-xl ring-1 ring-emerald-100' : 'opacity-80'}`}>
                      
+                     {/* Output Header */}
                      <div className="px-6 py-4 bg-white border-b border-slate-200 flex justify-between items-center">
                         <div className="flex items-center gap-2 text-slate-500">
                            <FileCode className="w-4 h-4" />
@@ -791,6 +815,7 @@ const App = () => {
                         )}
                      </div>
 
+                     {/* Output Content */}
                      <div className="p-6 h-full max-h-[400px] overflow-y-auto custom-scrollbar">
                         {!generated && !isGenerating && (
                            <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-3">
@@ -804,6 +829,7 @@ const App = () => {
                         {isGenerating && (
                            <div className="h-full flex flex-col items-center justify-center text-emerald-600 space-y-4">
                               <div className="relative scale-125">
+                                 {/* Replaced generic spinner with custom Helix Loader */}
                                  <HelixLoader />
                               </div>
                               <p className="text-sm font-bold animate-pulse mt-2">Cross-referencing Biomarkers...</p>
