@@ -54,9 +54,8 @@ const StyleInjection = () => (
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
     
-    /* Custom class for the 95% transparent header */
     .glass-nav {
-      background: rgba(255, 255, 255, 0.05); /* 95% transparent */
+      background: rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -86,24 +85,12 @@ const StyleInjection = () => (
         radial-gradient(at 0% 100%, rgba(209, 250, 229, 0.4) 0px, transparent 50%);
     }
 
-    .glow-text {
-      text-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
-    }
-
+    /* Animations */
     @keyframes float-particle {
       0%, 100% { transform: translateY(0px); }
       50% { transform: translateY(-10px); }
     }
-
-    .animate-float {
-      animation: float-particle 4s ease-in-out infinite;
-    }
-    
-    /* Animation for the new helix */
-    @keyframes helix-spin {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
+    .animate-float { animation: float-particle 4s ease-in-out infinite; }
     
     @keyframes fade-in-up {
       from { opacity: 0; transform: translateY(20px); }
@@ -224,8 +211,7 @@ const translations: { [key: string]: Translations } = {
   }
 };
 
-// --- UPDATED PRODUCT LIST WITH PLACEHOLDER IMAGES FOR PREVIEW ---
-// NOTE: Replace these URLs with your local file paths (e.g., "BPC-157.webp") before deployment.
+// --- PRODUCT LIST ---
 const products = [
   { name: "BPC-157", code: "BP-157", cat: "Recovery", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=BPC-157", video: "bpc157_spin.mp4" },
   { name: "BPC-157 + TB-500", code: "BLEND-01", cat: "Recovery Blend", purity: "≥99%", status: "In Stock", image: "https://placehold.co/600x600/f0fdf4/059669?text=Blend+BPC+TB", video: null },
@@ -240,21 +226,15 @@ const products = [
 ];
 
 // --- COMPONENT: CODED LOGO (SVG) ---
-// This ensures the logo is always visible in preview without needing external files
 const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
   <svg viewBox="0 0 300 80" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
-    {/* Icon: A stylized molecule/leaf hybrid */}
     <path d="M40 20L20 30L20 50L40 60L60 50L60 30L40 20Z" stroke="#059669" strokeWidth="3" fill="url(#logo-gradient)"/>
     <path d="M40 20V60" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <path d="M20 30L60 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <path d="M60 30L20 50" stroke="#059669" strokeWidth="2" strokeLinecap="round"/>
     <circle cx="40" cy="40" r="4" fill="#ffffff" stroke="#059669" strokeWidth="2"/>
-    
-    {/* Text: POLY */}
     <text x="80" y="52" fontFamily="sans-serif" fontWeight="800" fontSize="32" fill="#1e293b" letterSpacing="-1">POLY</text>
-    {/* Text: BIOTECH */}
     <text x="175" y="52" fontFamily="sans-serif" fontWeight="300" fontSize="32" fill="#059669" letterSpacing="1">BIOTECH</text>
-    
     <defs>
       <linearGradient id="logo-gradient" x1="20" y1="20" x2="60" y2="60" gradientUnits="userSpaceOnUse">
         <stop stopColor="#d1fae5"/>
@@ -264,7 +244,109 @@ const PolyBiotechLogo = ({ className = "h-10" }: { className?: string }) => (
   </svg>
 );
 
-// --- COMPONENT: PRODUCT CARD WITH FALLBACK ---
+// --- COMPONENT: HELIX GRAPHIC ---
+const PeptideHelixGraphic = () => {
+  const width = 800;
+  const height = 500;
+  const amplitude = 80;
+  const frequency = 0.02;
+  const points = [];
+  for (let x = 0; x <= width; x += 5) { points.push(x); }
+
+  const strand1Path = points.map(x => {
+    const y = height / 2 + amplitude * Math.sin(x * frequency);
+    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
+  const strand2Path = points.map(x => {
+    const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+
+  return (
+    <div className="relative w-full aspect-video overflow-hidden bg-emerald-50/10">
+      <svg viewBox="0 0 800 500" className="w-full h-full">
+        <defs>
+          <linearGradient id="strand-gradient" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
+            <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
+          </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+        <g className="opacity-10" stroke="#059669" strokeWidth="0.5">
+           <line x1="0" y1="100" x2="800" y2="100" />
+           <line x1="0" y1="400" x2="800" y2="400" />
+           {Array.from({length: 10}).map((_, i) => (
+             <line key={i} x1={i * 80} y1="0" x2={i * 80} y2="500" strokeDasharray="5 5" />
+           ))}
+        </g>
+        <g stroke="#10b981" strokeWidth="1" strokeOpacity="0.3">
+          {points.filter((_, i) => i % 10 === 0).map((x, i) => {
+            const y1 = height / 2 + amplitude * Math.sin(x * frequency);
+            const y2 = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+            return <line key={i} x1={x} y1={y1} x2={x} y2={y2} className="animate-pulse" style={{animationDelay: `${i * 0.1}s`}} />;
+          })}
+        </g>
+        <path d={strand1Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" className="drop-shadow-lg" />
+        <path d={strand2Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" strokeOpacity="0.6" />
+        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
+          const y = height / 2 + amplitude * Math.sin(x * frequency);
+          return (
+            <g key={`s1-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2}s` }}>
+              <circle cx={x} cy={y} r="6" fill="#059669" filter="url(#glow)" />
+              <circle cx={x} cy={y} r="12" fill="#059669" fillOpacity="0.15" />
+            </g>
+          );
+        })}
+        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
+          const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
+          return (
+            <g key={`s2-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2 + 1}s` }}>
+              <circle cx={x} cy={y} r="4" fill="#10b981" />
+              <circle cx={x} cy={y} r="8" fill="#10b981" fillOpacity="0.15" />
+            </g>
+          );
+        })}
+        <g transform="translate(600, 100)">
+          <rect x="0" y="0" width="140" height="50" rx="12" fill="rgba(255,255,255,0.9)" stroke="#d1fae5" strokeWidth="1" />
+          <circle cx="20" cy="25" r="4" fill="#059669" className="animate-ping" />
+          <text x="35" y="20" className="font-heading text-[10px] font-bold fill-slate-400 uppercase tracking-wide">Structure ID</text>
+          <text x="35" y="35" className="font-heading text-sm font-bold fill-emerald-900">Alpha-Helix 2B</text>
+        </g>
+      </svg>
+    </div>
+  );
+};
+
+// --- COMPONENT: HELIX LOADER ---
+const HelixLoader = () => {
+  return (
+    <div className="flex items-center gap-1.5 h-12 justify-center py-4">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="relative flex flex-col items-center justify-center h-full w-3">
+           <div 
+             className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full"
+             style={{ animation: `loader-orbit-1 1.5s infinite linear`, animationDelay: `${i * 0.15}s` }}
+           />
+           <div 
+             className="absolute w-2.5 h-2.5 bg-emerald-300 rounded-full"
+             style={{ animation: `loader-orbit-2 1.5s infinite linear`, animationDelay: `${i * 0.15}s` }}
+           />
+           <div 
+              className="w-0.5 h-8 bg-emerald-200/50"
+              style={{ transform: 'scaleY(0.5)' }}
+           />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// --- COMPONENT: PRODUCT CARD ---
 const ProductCard = ({ product }: { product: any }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isHovering, setIsHovering] = useState(false);
@@ -290,18 +372,12 @@ const ProductCard = ({ product }: { product: any }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-       
-       {/* Product Image Area */}
        <div className="aspect-square bg-slate-50 relative flex items-center justify-center p-6 group-hover:bg-emerald-50/30 transition-colors overflow-hidden">
-          
-          {/* Image (Always present, hidden when video plays) */}
           <img 
             src={product.image} 
             alt={product.name}
             className={`w-full h-full object-contain drop-shadow-sm transition-all duration-500 ${isHovering && product.video ? 'opacity-0 scale-110' : 'opacity-100 scale-100'}`}
           />
-          
-          {/* Video (Only if exists) */}
           {product.video && (
              <video 
                ref={videoRef}
@@ -312,8 +388,6 @@ const ProductCard = ({ product }: { product: any }) => {
                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isHovering ? 'opacity-100' : 'opacity-0'}`}
              />
           )}
-
-          {/* Status Badge */}
           <div className="absolute top-4 right-4 z-10">
             <span className={`inline-flex px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full border backdrop-blur-sm ${
               product.status === 'In Stock' || product.status === 'Available' 
@@ -325,16 +399,12 @@ const ProductCard = ({ product }: { product: any }) => {
               {product.status}
             </span>
           </div>
-
-           {/* Video Indicator (Optional) */}
-           {product.video && !isHovering && (
+          {product.video && !isHovering && (
              <div className="absolute bottom-4 right-4 bg-black/50 text-white p-1.5 rounded-full backdrop-blur-sm">
                 <Play className="w-3 h-3 fill-white" />
              </div>
           )}
        </div>
-
-       {/* Product Details */}
        <div className="p-6 flex flex-col flex-grow">
           <div className="mb-4">
              <div className="flex items-center justify-between mb-1">
@@ -343,7 +413,6 @@ const ProductCard = ({ product }: { product: any }) => {
              </div>
              <h4 className="font-heading font-bold text-lg text-slate-900 leading-tight group-hover:text-emerald-700 transition-colors">{product.name}</h4>
           </div>
-          
           <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-100">
              <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
@@ -354,139 +423,6 @@ const ProductCard = ({ product }: { product: any }) => {
              </button>
           </div>
        </div>
-    </div>
-  );
-};
-
-// --- COMPONENT: IMPROVED HELIX ANIMATION ---
-const PeptideHelixGraphic = () => {
-  // Constructing a continuous ribbon helix using SVG paths
-  const width = 800;
-  const height = 500;
-  const amplitude = 80;
-  const frequency = 0.02;
-  const points = [];
-  
-  for (let x = 0; x <= width; x += 5) {
-    points.push(x);
-  }
-
-  // Generate path data for two intertwined strands
-  const strand1Path = points.map(x => {
-    const y = height / 2 + amplitude * Math.sin(x * frequency);
-    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-
-  const strand2Path = points.map(x => {
-    const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-    return `${x === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-
-  return (
-    <div className="relative w-full aspect-video overflow-hidden bg-emerald-50/10">
-      <svg viewBox="0 0 800 500" className="w-full h-full">
-        <defs>
-          <linearGradient id="strand-gradient" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
-            <stop offset="50%" stopColor="#10b981" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#10b981" stopOpacity="0.1" />
-          </linearGradient>
-          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-
-        {/* Background Grid Lines */}
-        <g className="opacity-10" stroke="#059669" strokeWidth="0.5">
-           <line x1="0" y1="100" x2="800" y2="100" />
-           <line x1="0" y1="400" x2="800" y2="400" />
-           {/* Vertical grid */}
-           {Array.from({length: 10}).map((_, i) => (
-             <line key={i} x1={i * 80} y1="0" x2={i * 80} y2="500" strokeDasharray="5 5" />
-           ))}
-        </g>
-
-        {/* Connecting Bonds (Hydrogen Bonds) */}
-        <g stroke="#10b981" strokeWidth="1" strokeOpacity="0.3">
-          {points.filter((_, i) => i % 10 === 0).map((x, i) => {
-            const y1 = height / 2 + amplitude * Math.sin(x * frequency);
-            const y2 = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-            return <line key={i} x1={x} y1={y1} x2={x} y2={y2} className="animate-pulse" style={{animationDelay: `${i * 0.1}s`}} />;
-          })}
-        </g>
-
-        {/* Strand 1 - The Ribbon */}
-        <path d={strand1Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" className="drop-shadow-lg" />
-        
-        {/* Strand 2 - The Ribbon */}
-        <path d={strand2Path} fill="none" stroke="url(#strand-gradient)" strokeWidth="8" strokeLinecap="round" strokeOpacity="0.6" />
-
-        {/* Atoms on Strand 1 */}
-        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
-          const y = height / 2 + amplitude * Math.sin(x * frequency);
-          return (
-            <g key={`s1-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2}s` }}>
-              <circle cx={x} cy={y} r="6" fill="#059669" filter="url(#glow)" />
-              <circle cx={x} cy={y} r="12" fill="#059669" fillOpacity="0.15" />
-            </g>
-          );
-        })}
-
-        {/* Atoms on Strand 2 */}
-        {points.filter((_, i) => i % 12 === 0).map((x, i) => {
-          const y = height / 2 + amplitude * Math.sin(x * frequency + Math.PI);
-          return (
-            <g key={`s2-${i}`} className="animate-float" style={{ animationDelay: `${i * -0.2 + 1}s` }}>
-              <circle cx={x} cy={y} r="4" fill="#10b981" />
-              <circle cx={x} cy={y} r="8" fill="#10b981" fillOpacity="0.15" />
-            </g>
-          );
-        })}
-
-        {/* Highlight Data Tag */}
-        <g transform="translate(600, 100)">
-          <rect x="0" y="0" width="140" height="50" rx="12" fill="rgba(255,255,255,0.9)" stroke="#d1fae5" strokeWidth="1" />
-          <circle cx="20" cy="25" r="4" fill="#059669" className="animate-ping" />
-          <text x="35" y="20" className="font-heading text-[10px] font-bold fill-slate-400 uppercase tracking-wide">Structure ID</text>
-          <text x="35" y="35" className="font-heading text-sm font-bold fill-emerald-900">Alpha-Helix 2B</text>
-        </g>
-      </svg>
-    </div>
-  );
-};
-
-// --- COMPONENT: HELIX LOADER (NEW) ---
-const HelixLoader = () => {
-  return (
-    <div className="flex items-center gap-1.5 h-12 justify-center py-4">
-      {[...Array(5)].map((_, i) => (
-        <div key={i} className="relative flex flex-col items-center justify-center h-full w-3">
-           {/* Top Strand Particle */}
-           <div 
-             className="absolute w-2.5 h-2.5 bg-emerald-500 rounded-full"
-             style={{ 
-               animation: `loader-orbit-1 1.5s infinite linear`, 
-               animationDelay: `${i * 0.15}s` 
-             }}
-           />
-           {/* Bottom Strand Particle */}
-           <div 
-             className="absolute w-2.5 h-2.5 bg-emerald-300 rounded-full"
-             style={{ 
-               animation: `loader-orbit-2 1.5s infinite linear`, 
-               animationDelay: `${i * 0.15}s` 
-             }}
-           />
-           {/* Connecting Bond (Optional visual aid, fades in/out) */}
-           <div 
-              className="w-0.5 h-8 bg-emerald-200/50"
-              style={{
-                 transform: 'scaleY(0.5)', // Static scale for the bond line appearance
-              }}
-           />
-        </div>
-      ))}
     </div>
   );
 };
@@ -512,7 +448,6 @@ const App = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   
-  // AI Feature State
   const [aiBloodPanel, setAiBloodPanel] = useState('');
   const [aiBloodFile, setAiBloodFile] = useState<File | null>(null);
   const [aiBiometrics, setAiBiometrics] = useState('');
@@ -549,8 +484,6 @@ const App = () => {
     setAiResult('');
 
     try {
-      // Safely access API key, defaulting to empty string if not available
-      // Using try-catch to handle environments where process might be undefined
       let apiKey = "";
       try {
         apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
@@ -561,8 +494,6 @@ const App = () => {
       let panelData = aiBloodPanel;
       
       if (aiBloodFile) {
-        // In a real app, this is where OCR/PDF parsing would happen
-        // For this demo, we simulate extraction if the user hasn't typed anything else
         if (panelData.includes("[File Attached")) {
            panelData = "Standard Male Hormone Panel (Simulated Extraction): Total T: 350 ng/dL, Free T: 8 ng/dL, Estradiol: 22 pg/mL, IGF-1: 110 ng/mL, Cholesterol: 210 mg/dL.";
         }
@@ -573,7 +504,7 @@ const App = () => {
       Subject Profile:
       - Biometrics: ${aiBiometrics}
       - Blood Panel Data: ${panelData}
-      - Primary Goal: ${aiGoal}
+      - Primary Goal: ${String(aiGoal).toUpperCase()}
       - Additional Context/Goals: ${aiAdditionalInfo || 'None provided'}
 
       Based on these parameters, recommend the top 2-3 research peptides. For each, explain:
@@ -607,7 +538,6 @@ const App = () => {
     }
   };
 
-  // Helper to render markdown-like text safely
   const renderText = (text: string) => {
     return text.split('\n').map((line, i) => {
       if (line.startsWith('###')) return <h3 key={i} className="text-lg font-bold text-emerald-800 mt-4 mb-2">{line.replace('###', '')}</h3>;
@@ -622,17 +552,12 @@ const App = () => {
       <StyleInjection />
       <MoleculeBackground />
 
-      {/* --- NAVIGATION (Floating Pill with 95% Transparency) --- */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
         <nav className={`pointer-events-auto transition-all duration-500 ease-out ${scrolled ? 'w-full max-w-5xl glass-nav rounded-full shadow-lg py-3 px-6' : 'w-full max-w-7xl bg-transparent py-4 px-4'}`}>
           <div className="flex justify-between items-center">
-            
-            {/* Logo */}
             <div className="flex items-center gap-3 group cursor-pointer">
               <PolyBiotechLogo className="w-auto h-10" />
             </div>
-
-            {/* Desktop Links */}
             <div className={`hidden md:flex items-center ${scrolled ? 'space-x-1' : 'space-x-6'}`}>
               {Object.entries(t.nav).map(([key, label]) => (
                 <a 
@@ -644,30 +569,25 @@ const App = () => {
                 </a>
               ))}
             </div>
-
-            {/* Utilities */}
             <div className="flex items-center gap-3">
-              <button 
-                onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
-                className="hidden md:flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-full border border-slate-300 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
-              >
-                <Globe className="w-3 h-3" />
-                {lang.toUpperCase()}
-              </button>
-              <button className="bg-slate-900 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-full text-sm font-heading font-medium transition-all shadow-lg hover:shadow-emerald-300/50 hover:-translate-y-0.5 flex items-center gap-2">
-                Portal <ArrowUpRight className="w-3 h-3" />
-              </button>
-              
-              {/* Mobile Toggle */}
-              <button className="md:hidden p-2 text-slate-700 bg-white/70 rounded-full" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
+               <button 
+                 onClick={() => setLang(lang === 'en' ? 'es' : 'en')}
+                 className="hidden md:flex items-center gap-1 text-xs font-bold text-slate-600 hover:text-emerald-700 px-3 py-1.5 rounded-full border border-slate-300 hover:border-emerald-300 hover:bg-emerald-50 transition-all"
+               >
+                 <Globe className="w-3 h-3" />
+                 {lang.toUpperCase()}
+               </button>
+               <button className="bg-slate-900 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-full text-sm font-heading font-medium transition-all shadow-lg hover:shadow-emerald-300/50 hover:-translate-y-0.5 flex items-center gap-2">
+                 Portal <ArrowUpRight className="w-3 h-3" />
+               </button>
+               <button className="md:hidden p-2 text-slate-700 bg-white/70 rounded-full" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                 {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+               </button>
             </div>
           </div>
         </nav>
       </div>
       
-      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-40 bg-white/98 backdrop-blur-xl pt-32 px-6 md:hidden animate-fade-in">
           <div className="flex flex-col gap-6 text-center">
@@ -680,17 +600,13 @@ const App = () => {
         </div>
       )}
 
-      {/* --- HERO SECTION WITH IMAGE BACKGROUND --- */}
       <section className="relative pt-48 pb-16 lg:pt-64 lg:pb-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto overflow-hidden">
-        
-        {/* HERO BACKGROUND IMAGE - Using image_729364.jpg */}
         <div className="absolute inset-0 z-0">
             <img 
                src="image_729364.jpg" 
                alt="Laboratory Background" 
                className="w-full h-full object-cover opacity-10" 
             />
-            {/* Gradient Overlay to ensure text readability */}
             <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
         </div>
 
@@ -700,18 +616,15 @@ const App = () => {
               <span className="w-2 h-2 bg-emerald-600 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.8)] animate-pulse" />
               <span className="text-xs font-bold text-emerald-900 tracking-wider uppercase font-heading">{t.hero.badge}</span>
             </div>
-            
             <h1 className="text-5xl lg:text-7xl font-bold text-slate-900 leading-[0.95] tracking-tight mb-8 font-heading">
               {t.hero.title} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-teal-500 italic font-medium">
                 {t.hero.titleSpan}
               </span>
             </h1>
-            
             <p className="text-lg md:text-xl text-slate-700 leading-relaxed max-w-xl mb-10 font-light">
               {t.hero.subtitle}
             </p>
-
             <div className="flex flex-col sm:flex-row gap-4">
               <button className="px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-heading font-semibold shadow-xl shadow-emerald-200/50 hover:shadow-emerald-300/50 hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group">
                 {t.hero.ctaPrimary}
@@ -723,10 +636,8 @@ const App = () => {
             </div>
           </div>
 
-          {/* Graphic Side */}
           <div className="lg:col-span-5 relative lg:translate-x-8">
             <div className="absolute -inset-4 bg-gradient-to-tr from-emerald-300/40 to-teal-200/40 rounded-[2rem] blur-2xl -z-10" />
-            
             <div className="glass-card rounded-[2rem] p-6 relative">
               <div className="absolute top-6 right-6 z-10">
                  <div className="bg-white/90 backdrop-blur shadow-sm rounded-full px-4 py-1.5 flex items-center gap-2 border border-emerald-100">
@@ -735,10 +646,8 @@ const App = () => {
                  </div>
               </div>
               <div className="rounded-xl overflow-hidden bg-white/50 border border-white/60 shadow-inner">
-                {/* 3D Helix Graphic restored here */}
                 <PeptideHelixGraphic />
               </div>
-              
               <div className="absolute -bottom-6 -left-6 bg-white/95 backdrop-blur p-5 rounded-2xl shadow-xl border border-white max-w-[16rem]">
                 <div className="flex items-center gap-4 mb-3">
                   <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700">
@@ -758,16 +667,12 @@ const App = () => {
         </div>
       </section>
 
-      {/* --- NEW SECTION: AI RESEARCH ASSISTANT (GEMINI INTEGRATION) --- */}
       <section className="py-20 bg-gradient-to-b from-white to-emerald-50/50 relative border-t border-emerald-100/50 overflow-hidden">
-         {/* Background details for this section */}
          <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-emerald-50 to-transparent -z-10" />
          <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-100/20 rounded-full blur-3xl -z-10" />
 
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div className="grid lg:grid-cols-12 gap-12">
-               
-               {/* Left: Tool Interface */}
                <div className="lg:col-span-7">
                  <div className="flex items-center gap-3 mb-6">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
@@ -788,7 +693,6 @@ const App = () => {
                                  <Upload className="w-3 h-3" /> Upload PDF/Image
                               </label>
                           </div>
-                          
                           {aiBloodFile ? (
                               <div className="w-full px-4 py-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between group transition-colors">
                                   <div className="flex items-center gap-3 overflow-hidden">
@@ -872,11 +776,9 @@ const App = () => {
                  </div>
                </div>
 
-               {/* Right: Output Area */}
                <div className="lg:col-span-5 flex flex-col h-full">
                   <div className={`flex-1 rounded-3xl border border-slate-200 bg-slate-50 overflow-hidden relative transition-all duration-500 animate-tilt-float ${generated ? 'shadow-xl ring-1 ring-emerald-100' : 'opacity-80'}`}>
                      
-                     {/* Output Header */}
                      <div className="px-6 py-4 bg-white border-b border-slate-200 flex justify-between items-center">
                         <div className="flex items-center gap-2 text-slate-500">
                            <FileCode className="w-4 h-4" />
@@ -889,7 +791,6 @@ const App = () => {
                         )}
                      </div>
 
-                     {/* Output Content */}
                      <div className="p-6 h-full max-h-[400px] overflow-y-auto custom-scrollbar">
                         {!generated && !isGenerating && (
                            <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-3">
@@ -903,7 +804,6 @@ const App = () => {
                         {isGenerating && (
                            <div className="h-full flex flex-col items-center justify-center text-emerald-600 space-y-4">
                               <div className="relative scale-125">
-                                 {/* Replaced generic spinner with custom Helix Loader */}
                                  <HelixLoader />
                               </div>
                               <p className="text-sm font-bold animate-pulse mt-2">Cross-referencing Biomarkers...</p>
