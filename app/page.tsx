@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, ReactNode } from 'react';
+import Script from 'next/script';
 import { 
   Microscope, 
   FlaskConical, 
@@ -454,7 +455,7 @@ const App: React.FC = () => {
   const [aiBloodPanel, setAiBloodPanel] = useState<string>('');
   const [aiBloodFile, setAiBloodFile] = useState<File | null>(null);
   const [aiBiometrics, setAiBiometrics] = useState<string>('');
-  const [aiGoal, setAiGoal] = useState<string>(''); // 👈 explicitly string
+  const [aiGoal, setAiGoal] = useState<string>(''); // string only
   const [aiAdditionalInfo, setAiAdditionalInfo] = useState<string>('');
   const [aiResult, setAiResult] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
@@ -487,7 +488,13 @@ const App: React.FC = () => {
     setAiResult('');
 
     try {
-      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY || "";
+      const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+      if (!apiKey) {
+        setAiResult('Missing Gemini API key. Please set NEXT_PUBLIC_GEMINI_API_KEY.');
+        setIsGenerating(false);
+        return;
+      }
+
       let panelData = aiBloodPanel;
       
       if (aiBloodFile) {
@@ -549,6 +556,9 @@ const App: React.FC = () => {
     <div className="min-h-screen mesh-bg font-sans text-slate-800 selection:bg-emerald-200 selection:text-emerald-950 overflow-x-hidden">
       <StyleInjection />
       <MoleculeBackground />
+
+      {/* HeyGen floating avatar embed */}
+      <Script src="/heygen-embed.js" strategy="afterInteractive" />
 
       {/* --- NAVIGATION (Floating Pill with 95% Transparency) --- */}
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-6 px-4 pointer-events-none">
